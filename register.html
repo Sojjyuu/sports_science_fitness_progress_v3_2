@@ -1,0 +1,433 @@
+<!doctype html>
+<html lang="th">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <title>สมัครสมาชิก | Sports Science Fitness Club</title>
+
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Noto+Sans+Thai:wght@400;500;600;700;800;900&display=swap" rel="stylesheet">
+  <style>
+    :root {
+      --blue-950: #001f55;
+      --blue-900: #002d73;
+      --blue-800: #003b91;
+      --blue-700: #0051d7;
+      --blue-600: #0b63ff;
+      --blue-500: #2c7dff;
+      --blue-100: #eef5ff;
+      --ink: #102147;
+      --muted: #63718f;
+      --white: #ffffff;
+      --line: #dbe6fb;
+      --shadow: 0 20px 55px rgba(17, 58, 129, .14);
+    }
+    * { box-sizing: border-box; }
+    html { scroll-behavior: smooth; }
+    body {
+      margin: 0;
+      font-family: "Noto Sans Thai", system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif;
+      color: var(--ink);
+      background:
+        radial-gradient(circle at top left, rgba(44,125,255,.12), transparent 32%),
+        linear-gradient(180deg, #f7fbff 0%, #ffffff 42%, #f2f7ff 100%);
+    }
+    body::-webkit-scrollbar { width: 12px; }
+    body::-webkit-scrollbar-track { background: #eef5ff; }
+    body::-webkit-scrollbar-thumb {
+      background: linear-gradient(180deg, var(--blue-600), var(--blue-900));
+      border-radius: 999px;
+      border: 3px solid #eef5ff;
+    }
+    a { color: inherit; text-decoration: none; }
+    .container { width: min(1120px, calc(100% - 36px)); margin-inline: auto; }
+    .site-header {
+      height: 98px;
+      background: rgba(255,255,255,.96);
+      position: sticky;
+      top: 0;
+      z-index: 30;
+      box-shadow: 0 1px 0 rgba(17, 58, 129, .09);
+      backdrop-filter: blur(18px);
+    }
+    .nav-wrap { height: 100%; display: flex; align-items: center; justify-content: space-between; gap: 28px; }
+    .logo { display: inline-flex; align-items: center; flex: 0 0 auto; line-height: 0; }
+    .site-header .logo-image { width: auto; height: 78px; max-width: 178px; display: block; object-fit: contain; }
+    .main-nav { display: flex; align-items: center; gap: 36px; font-weight: 600; color: #1f2b45; font-size: 15px; }
+    .main-nav a { position: relative; padding: 36px 0 31px; transition: color .22s ease; }
+    .main-nav a:hover, .main-nav a.active { color: var(--blue-600); }
+    .main-nav a::after { content: ""; position: absolute; left: 50%; bottom: 22px; width: 0; height: 3px; border-radius: 999px; background: var(--blue-600); transform: translateX(-50%); transition: width .22s ease; }
+    .main-nav a:hover::after, .main-nav a.active::after { width: 48px; }
+    .actions { display: flex; gap: 14px; align-items: center; }
+    .btn {
+      min-height: 46px;
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+      gap: 12px;
+      border-radius: 8px;
+      padding: 0 25px;
+      font-weight: 800;
+      font-size: 15px;
+      border: 1px solid var(--blue-600);
+      color: var(--blue-600);
+      background: var(--white);
+      cursor: pointer;
+      transition: transform .2s ease, box-shadow .2s ease, background .2s ease;
+      font-family: inherit;
+    }
+    .btn:hover { transform: translateY(-2px); box-shadow: 0 12px 28px rgba(11,99,255,.18); }
+    .btn-primary { color: var(--white); background: linear-gradient(135deg, var(--blue-500), var(--blue-700)); box-shadow: 0 14px 28px rgba(11,99,255,.24); }
+    .hamburger { display: none; width: 44px; height: 44px; border: 1px solid var(--line); background: #fff; border-radius: 10px; align-items: center; justify-content: center; cursor: pointer; }
+    .hamburger span, .hamburger span::before, .hamburger span::after { display: block; width: 20px; height: 2px; background: var(--blue-700); border-radius: 99px; position: relative; transition: .25s ease; }
+    .hamburger span::before, .hamburger span::after { content: ""; position: absolute; left: 0; }
+    .hamburger span::before { top: -7px; }
+    .hamburger span::after { top: 7px; }
+
+    .auth-main { min-height: calc(100vh - 98px); padding: 58px 0 66px; }
+    .auth-shell { display: grid; grid-template-columns: .9fr 1.1fr; background: rgba(255,255,255,.92); border: 1px solid var(--line); border-radius: 28px; overflow: hidden; box-shadow: var(--shadow); }
+    .auth-panel { position: relative; color: #fff; min-height: 650px; padding: 44px; display: flex; flex-direction: column; justify-content: space-between; background: linear-gradient(135deg, rgba(0,45,115,.96), rgba(0,80,190,.88)), url("https://images.unsplash.com/photo-1517836357463-d25dfeac3438?auto=format&fit=crop&w=1200&q=85") center / cover no-repeat; overflow: hidden; }
+    .auth-panel::after { content: ""; position: absolute; inset: 0; background: radial-gradient(circle at 25% 20%, rgba(255,255,255,.22), transparent 28%); pointer-events: none; }
+    .auth-panel > * { position: relative; z-index: 1; }
+    .panel-logo { display: inline-flex; width: fit-content; background: rgba(255,255,255,.98); border-radius: 18px; padding: 10px 16px; box-shadow: 0 18px 36px rgba(0,0,0,.16); }
+    .panel-logo img { width: 206px; height: auto; display: block; }
+    .panel-title { margin: 34px 0 14px; font-size: clamp(34px, 4vw, 48px); line-height: 1.16; font-weight: 900; letter-spacing: -.03em; }
+    .panel-text { margin: 0; color: rgba(255,255,255,.88); font-size: 17px; line-height: 1.75; max-width: 410px; }
+    .panel-badges { display: grid; gap: 14px; margin-top: 30px; }
+    .panel-badge { display: flex; align-items: center; gap: 12px; width: fit-content; max-width: 100%; padding: 11px 15px; border: 1px solid rgba(255,255,255,.26); border-radius: 999px; background: rgba(255,255,255,.10); backdrop-filter: blur(10px); color: rgba(255,255,255,.94); font-weight: 700; }
+    .panel-badge span { width: 26px; height: 26px; display: inline-grid; place-items: center; border-radius: 999px; background: #fff; color: var(--blue-700); font-weight: 900; }
+
+    .auth-card { padding: 48px; display: flex; flex-direction: column; justify-content: center; }
+    .auth-kicker { width: fit-content; margin: 0 0 13px; padding: 6px 13px; border-radius: 999px; background: var(--blue-100); color: var(--blue-700); font-weight: 900; font-size: 13px; }
+    .auth-card h1 { margin: 0; font-size: clamp(30px, 4vw, 42px); line-height: 1.18; font-weight: 900; letter-spacing: -.03em; }
+    .auth-card > p { margin: 13px 0 28px; color: var(--muted); line-height: 1.7; font-weight: 500; }
+    .auth-form { display: grid; gap: 18px; }
+    .form-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 18px; }
+    .field { display: grid; gap: 8px; }
+    .field label { color: #21345f; font-size: 14px; font-weight: 800; }
+    .input-wrap { position: relative; }
+    input, select, textarea { width: 100%; height: 50px; border: 1px solid #cfdcf4; border-radius: 12px; background: #fff; color: var(--ink); font: inherit; font-weight: 600; padding: 0 15px; outline: 0; transition: border-color .2s ease, box-shadow .2s ease; }
+    textarea { min-height: 96px; resize: vertical; padding-top: 13px; }
+    input:focus, select:focus, textarea:focus { border-color: var(--blue-600); box-shadow: 0 0 0 4px rgba(11,99,255,.10); }
+    .password-toggle { position: absolute; right: 10px; top: 50%; transform: translateY(-50%); border: 0; background: var(--blue-100); color: var(--blue-700); height: 32px; padding: 0 12px; border-radius: 999px; cursor: pointer; font: inherit; font-size: 12px; font-weight: 900; }
+    .helper-row { display: flex; align-items: center; justify-content: space-between; gap: 18px; color: var(--muted); font-size: 14px; }
+    .check-row { display: flex; align-items: flex-start; gap: 10px; color: #40506f; line-height: 1.55; font-size: 14px; font-weight: 600; }
+    .check-row input { width: 18px; height: 18px; margin-top: 2px; accent-color: var(--blue-600); flex: 0 0 auto; }
+    .form-submit { height: 52px; width: 100%; border-radius: 12px; border: 0; color: #fff; background: linear-gradient(135deg, var(--blue-500), var(--blue-700)); box-shadow: 0 14px 28px rgba(11,99,255,.22); font: inherit; font-weight: 900; cursor: pointer; transition: transform .2s ease, box-shadow .2s ease; }
+    .form-submit:hover { transform: translateY(-2px); box-shadow: 0 18px 34px rgba(11,99,255,.28); }
+    .switch-link { text-align: center; margin: 6px 0 0; color: var(--muted); font-weight: 600; }
+    .switch-link a { color: var(--blue-700); font-weight: 900; }
+    .status-box { display: none; border-radius: 14px; padding: 13px 15px; font-size: 14px; font-weight: 700; line-height: 1.55; }
+    .status-box.success { display: block; color: #085d2b; background: #eafff1; border: 1px solid #b9f0ca; }
+    .status-box.error { display: block; color: #982525; background: #fff1f1; border: 1px solid #ffd1d1; }
+
+    [hidden] { display: none !important; }
+    .service-options { display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 12px; }
+    .plan-option:focus-within { outline: 2px solid #075bd8; outline-offset: 3px; }
+    @media (max-width: 540px) { .service-options { grid-template-columns: 1fr; } }
+    .plan-options { display: grid; grid-template-columns: repeat(4, 1fr); gap: 12px; margin: 5px 0 4px; }
+    .plan-option { position: relative; display: grid; gap: 3px; padding: 14px 12px; border: 1px solid #cfdcf4; border-radius: 14px; cursor: pointer; transition: .22s ease; background: #fff; }
+    .plan-option input { position: absolute; opacity: 0; pointer-events: none; }
+    .plan-option strong { font-size: 14px; color: #12224a; }
+    .plan-option span { font-size: 18px; color: var(--blue-700); font-weight: 900; }
+    .plan-option small { color: var(--muted); font-weight: 700; }
+    .plan-option:has(input:checked) { border-color: var(--blue-600); box-shadow: 0 0 0 4px rgba(11,99,255,.10); background: linear-gradient(180deg, #fff, #f4f8ff); }
+
+    .site-footer { margin-top: 0; background: radial-gradient(circle at 14% 10%, rgba(44,125,255,.25), transparent 28%), linear-gradient(135deg, #003176 0%, #004aa8 50%, #002d73 100%); color: #fff; padding: 43px 0 25px; position: relative; overflow: hidden; }
+    .footer-grid { display: grid; grid-template-columns: 1.2fr 1.45fr .8fr 1.35fr; gap: 48px; align-items: start; padding-bottom: 30px; border-bottom: 1px solid rgba(255,255,255,.18); }
+    .footer-logo .logo { background: rgba(255,255,255,.98); border-radius: 16px; padding: 10px 16px; box-shadow: 0 16px 35px rgba(0,0,0,.12); }
+    .footer-logo .logo-image { width: auto; height: 82px; max-width: 230px; display: block; object-fit: contain; }
+    .footer-col h3 { margin: 0 0 14px; font-size: 19px; font-weight: 900; }
+    .footer-col p, .footer-col a { color: rgba(255,255,255,.86); font-size: 15px; line-height: 1.65; font-weight: 500; }
+    .contact-line { display: flex; gap: 11px; margin: 9px 0; align-items: flex-start; }
+    .quick-links { display: grid; gap: 9px; }
+    .newsletter { display: flex; align-items: center; margin-top: 12px; height: 47px; border: 1px solid rgba(255,255,255,.85); border-radius: 999px; overflow: hidden; background: rgba(255,255,255,.08); }
+    .newsletter input { min-width: 0; flex: 1; height: 100%; border: 0; background: transparent; color: #fff; outline: 0; padding: 0 18px; font-family: inherit; }
+    .newsletter input::placeholder { color: rgba(255,255,255,.86); }
+    .newsletter button { width: 56px; height: 100%; border: 0; background: transparent; color: #fff; font-size: 32px; cursor: pointer; font-weight: 900; }
+    .footer-bottom { display: flex; justify-content: space-between; align-items: center; padding-top: 18px; color: rgba(255,255,255,.75); font-size: 13px; }
+    .socials { display: flex; gap: 18px; }
+    .socials a { width: 24px; height: 24px; display: inline-grid; place-items: center; border-radius: 999px; color: #fff; opacity: .86; }
+
+    @media (max-width: 1050px) {
+      .main-nav { gap: 22px; font-size: 14px; }
+      .actions .btn { padding-inline: 18px; }
+      .auth-shell { grid-template-columns: 1fr; }
+      .auth-panel { min-height: auto; padding: 34px; }
+      .footer-grid { grid-template-columns: repeat(2, 1fr); }
+    }
+    @media (max-width: 820px) {
+      .site-header { height: 82px; }
+      .site-header .logo-image { height: 62px; max-width: 142px; }
+      .hamburger { display: inline-flex; }
+      .main-nav, .actions { position: fixed; left: 18px; right: 18px; display: none; background: #fff; box-shadow: var(--shadow); border: 1px solid var(--line); }
+      .main-nav { top: 90px; border-radius: 18px 18px 0 0; flex-direction: column; align-items: stretch; padding: 16px; gap: 0; }
+      .main-nav a { padding: 13px 14px; border-radius: 10px; }
+      .main-nav a::after { display: none; }
+      .main-nav a:hover, .main-nav a.active { background: var(--blue-100); }
+      .actions { top: 416px; border-top: 0; border-radius: 0 0 18px 18px; padding: 16px; flex-direction: column; }
+      .actions .btn { width: 100%; }
+      body.menu-open .main-nav, body.menu-open .actions { display: flex; }
+      body.menu-open .hamburger span { background: transparent; }
+      body.menu-open .hamburger span::before { transform: rotate(45deg); top: 0; }
+      body.menu-open .hamburger span::after { transform: rotate(-45deg); top: 0; }
+      .auth-main { padding: 34px 0 44px; }
+      .auth-card { padding: 34px 24px; }
+      .form-grid, .plan-options { grid-template-columns: 1fr; }
+      .footer-grid { gap: 30px; }
+    }
+    @media (max-width: 620px) {
+      .container { width: min(100% - 28px, 1120px); }
+      .auth-shell { border-radius: 20px; }
+      .auth-panel { padding: 26px; }
+      .panel-logo img { width: 165px; }
+      .auth-card { padding: 28px 18px; }
+      .helper-row { flex-direction: column; align-items: flex-start; gap: 8px; }
+      .footer-grid { grid-template-columns: 1fr; }
+      .footer-bottom { flex-direction: column; gap: 15px; align-items: flex-start; }
+      .footer-logo .logo-image { height: 76px; max-width: 200px; }
+    }
+  </style>
+
+  <script>
+    window.addEventListener('pageshow', function(event) {
+      if (event.persisted) window.location.reload();
+    });
+    window.addEventListener('storage', function(event) {
+      if (event.key === 'sportsScienceCurrentUser' || event.key === null) window.location.reload();
+    });
+  </script>
+  <link rel="stylesheet" href="css/ui.css">
+</head>
+<body>
+
+  <header class="site-header">
+    <div class="container nav-wrap">
+      <a class="logo" href="index.html#home" aria-label="Sports Science Fitness Club">
+        <img class="logo-image" src="assets/logo-ss-fitness-clean.png" alt="Sports Science Fitness Club logo">
+      </a>
+      <nav class="main-nav" aria-label="Main navigation"><a href="index.html">หน้าแรก</a><a href="fitness.html">สถานที่ฟิตเนส</a><a href="packages.html">แพ็กเกจ</a><a href="trainers.html">เทรนเนอร์</a><a href="health-profile.html">ข้อมูลสุขภาพ</a></nav>
+      <div class="actions ui-auth">
+        <a class="btn " href="login.html">เข้าสู่ระบบ</a>
+        <a class="btn btn-primary active" href="register.html">สมัครสมาชิก</a>
+      </div>
+      <button class="hamburger" type="button" aria-label="เปิดเมนู"><span></span></button>
+    </div>
+  </header>
+
+  <main class="auth-main">
+    <div class="container auth-shell">
+      <section class="auth-panel" aria-label="รายละเอียดสมัครสมาชิก">
+        <div>
+          <a class="panel-logo" href="index.html#home"><img src="assets/logo-ss-fitness-clean.png" alt="Sports Science Fitness Club logo"></a>
+          <h1 class="panel-title">เริ่มต้นดูแลสุขภาพ<br>ในราคานักศึกษา</h1>
+          <p class="panel-text">เลือกแพ็กเกจที่เหมาะกับคุณ กรอกข้อมูลเบื้องต้น แล้วนำแบบฟอร์มนี้ไปต่อยอดเป็นระบบสมาชิกจริงได้ทันที</p>
+        </div>
+        <div class="panel-badges">
+          <div class="panel-badge"><span>✓</span> 1 เดือน เริ่มต้น 300 บาท</div>
+          <div class="panel-badge"><span>✓</span> แพ็กเกจยอดนิยม 3 เดือน 750 บาท</div>
+          <div class="panel-badge"><span>✓</span> รองรับการเชื่อมระบบชำระเงินภายหลัง</div>
+        </div>
+      </section>
+      <section class="auth-card" aria-label="ฟอร์มสมัครสมาชิก">
+        <div class="auth-kicker">MEMBER REGISTER</div>
+        <h1>สมัครสมาชิก</h1>
+        <p>กรอกข้อมูลสมาชิกและเลือกแพ็กเกจที่ต้องการ ระบบจะบันทึกข้อมูลตัวอย่างไว้ในเบราว์เซอร์เพื่อทดลองเข้าสู่ระบบ</p>
+        <form class="auth-form" id="registerForm">
+          <div id="registerStatus" class="status-box" aria-live="polite"></div>
+          <div class="form-grid">
+            <div class="field">
+              <label for="fullName">ชื่อ-นามสกุล</label>
+              <input id="fullName" name="fullName" type="text" placeholder="กรอกชื่อ-นามสกุล" autocomplete="name" required>
+            </div>
+            <div class="field">
+              <label for="studentId">รหัสนักศึกษา / รหัสสมาชิก</label>
+              <input id="studentId" name="studentId" type="text" placeholder="เช่น 66XXXXXXXX" required>
+            </div>
+          </div>
+          <div class="form-grid">
+            <div class="field">
+              <label for="registerEmail">อีเมล</label>
+              <input id="registerEmail" name="email" type="email" placeholder="example@email.com" autocomplete="email" required>
+            </div>
+            <div class="field">
+              <label for="phone">เบอร์โทรศัพท์</label>
+              <input id="phone" name="phone" type="tel" placeholder="08X-XXX-XXXX" autocomplete="tel" required>
+            </div>
+          </div>
+          <div class="field">
+            <label id="serviceLabel">ต้องการใช้บริการแบบไหน?</label>
+            <div class="service-options" role="radiogroup" aria-labelledby="serviceLabel">
+              <label class="plan-option"><input type="radio" name="serviceType" value="fitness" required checked><strong>ใช้ฟิตเนสด้วยตัวเอง</strong><small>เลือกแพ็กเกจตามระยะเวลา เพื่อเข้าใช้พื้นที่และอุปกรณ์</small></label>
+              <label class="plan-option"><input type="radio" name="serviceType" value="trainer" required><strong>ฝึกกับเทรนเนอร์</strong><small>เลือกโค้ชและจำนวนครั้งที่ต้องการฝึกส่วนตัว</small></label>
+            </div>
+          </div>
+          <div class="field" id="fitnessPlanSection">
+            <label>เลือกแพ็กเกจฟิตเนส</label>
+            <div class="plan-options" role="radiogroup" aria-label="เลือกแพ็กเกจ">
+              <label class="plan-option"><input type="radio" name="plan" value="1m" required><strong>1 เดือน</strong><span>300 ฿</span><small>เริ่มต้นง่าย</small></label>
+              <label class="plan-option"><input type="radio" name="plan" value="3m" required><strong>3 เดือน</strong><span>750 ฿</span><small>ยอดนิยม</small></label>
+              <label class="plan-option"><input type="radio" name="plan" value="6m" required><strong>6 เดือน</strong><span>1,400 ฿</span><small>คุ้มต่อเนื่อง</small></label>
+              <label class="plan-option"><input type="radio" name="plan" value="1y" required><strong>1 ปี</strong><span>2,500 ฿</span><small>คุ้มที่สุด</small></label>
+            </div>
+          </div>
+          <div id="trainerPlanSection" hidden aria-live="polite">
+            <p class="form-note">สมัครบัญชีและเข้าสู่ระบบก่อน จากนั้นดูโปรไฟล์ เลือกโค้ช และเลือกแพ็กเกจตามจำนวนครั้งได้ โดยยังไม่ต้องเลือกแพ็กเกจฟิตเนสรายเดือน</p>
+          </div>
+          <div class="form-grid">
+            <div class="field">
+              <label for="registerPassword">รหัสผ่าน</label>
+              <div class="input-wrap">
+                <input id="registerPassword" name="password" type="password" placeholder="อย่างน้อย 6 ตัวอักษร" autocomplete="new-password" minlength="6" required>
+                <button class="password-toggle" type="button" data-password-toggle="#registerPassword">แสดง</button>
+              </div>
+            </div>
+            <div class="field">
+              <label for="confirmPassword">ยืนยันรหัสผ่าน</label>
+              <div class="input-wrap">
+                <input id="confirmPassword" name="confirmPassword" type="password" placeholder="กรอกรหัสผ่านอีกครั้ง" autocomplete="new-password" minlength="6" required>
+                <button class="password-toggle" type="button" data-password-toggle="#confirmPassword">แสดง</button>
+              </div>
+            </div>
+          </div>
+          <label class="check-row"><input id="terms" type="checkbox" required> ยืนยันว่าข้อมูลถูกต้อง และยอมรับเงื่อนไขการสมัครสมาชิก</label>
+          <button class="form-submit" type="submit">สมัครสมาชิก</button>
+          <p class="switch-link">มีบัญชีอยู่แล้ว? <a href="login.html">เข้าสู่ระบบ</a></p>
+        </form>
+      </section>
+    </div>
+  </main>
+
+  <footer id="contact" class="site-footer">
+    <div class="container">
+      <div class="footer-grid">
+        <div class="footer-logo">
+          <a class="logo" href="index.html" aria-label="Sports Science Fitness Club">
+            <img class="logo-image" src="assets/logo-ss-fitness-clean.png" alt="Sports Science Fitness Club logo">
+          </a>
+        </div>
+
+        <div class="footer-col">
+          <h3>วิทยาศาสตร์การกีฬา นวัตกรรมและสุขภาพ</h3>
+          <p>มหาวิทยาลัยขอนแก่น วิทยาเขตหนองคาย</p>
+          <div class="contact-line"><span>112 หมู่ 7 บ้านหนองเดิ่น ต.หนองกอมเกาะ<br>อ.เมืองหนองคาย จ.หนองคาย 43000</span></div>
+          <div class="contact-line"><span>042-415600</span></div>
+          <div class="contact-line"><span>is.inbox@kku.ac.th</span></div>
+        </div>
+
+        <div class="footer-col">
+          <h3>ลิงก์ด่วน</h3>
+          <div class="quick-links">
+            <a href="fitness.html">สถานที่ฟิตเนส</a>
+            <a href="#package">แพ็กเกจ</a>
+            <a href="#service">บริการของเรา</a>
+            <a href="#contact">ติดต่อเรา</a>
+          </div>
+        </div>
+
+        <div class="footer-col">
+          <h3>ติดตามข่าวสาร</h3>
+          <p>รับข่าวสารและโปรโมชั่นพิเศษก่อนใคร</p>
+          <form class="newsletter">
+            <input type="email" placeholder="อีเมลของคุณ" aria-label="อีเมลของคุณ">
+            <button type="submit" aria-label="ส่งอีเมล">›</button>
+          </form>
+        </div>
+      </div>
+
+      <div class="footer-bottom">
+        <span>© 2026 Sports Science Fitness Club. Front-end Demo.</span>
+        <div class="socials" aria-label="Social links">
+          <a href="https://www.facebook.com/SportandExerciesScienceKKUNKC" target="_blank" rel="noopener" aria-label="Facebook">f</a>
+        </div>
+      </div>
+    </div>
+  </footer>
+
+
+  <script>
+    const hamburger = document.querySelector('.hamburger');
+    hamburger.addEventListener('click', () => document.body.classList.toggle('menu-open'));
+    document.querySelectorAll('.newsletter').forEach(form => {
+      form.addEventListener('submit', event => {
+        event.preventDefault();
+        const input = event.currentTarget.querySelector('input');
+        if (!input.value.trim()) return;
+        alert('ขอบคุณสำหรับการติดตามข่าวสาร');
+        input.value = '';
+      });
+    });
+    document.querySelectorAll('[data-password-toggle]').forEach(button => {
+      button.addEventListener('click', () => {
+        const input = document.querySelector(button.dataset.passwordToggle);
+        if (!input) return;
+        input.type = input.type === 'password' ? 'text' : 'password';
+        button.textContent = input.type === 'password' ? 'แสดง' : 'ซ่อน';
+      });
+    });
+    function showStatus(id, type, message) {
+      const box = document.getElementById(id);
+      if (!box) return;
+      box.className = 'status-box ' + type;
+      box.textContent = message;
+    }
+  </script>
+
+  <script>
+    const params = new URLSearchParams(window.location.search);
+    const serviceInputs = document.querySelectorAll('[name="serviceType"]');
+    if (params.get('type') === 'trainer') serviceInputs[1].checked = true;
+    function updateService() {
+      const isTrainer = document.querySelector('[name="serviceType"]:checked').value === 'trainer';
+      document.getElementById('fitnessPlanSection').hidden = isTrainer;
+      document.getElementById('trainerPlanSection').hidden = !isTrainer;
+      document.querySelectorAll('[name="plan"]').forEach(input => {
+        input.disabled = isTrainer;
+        input.required = !isTrainer;
+      });
+    }
+    serviceInputs.forEach(input => input.addEventListener('change', updateService));
+    updateService();
+    const planFromUrl = params.get('plan');
+    if (planFromUrl) {
+      const planInput = document.querySelector('input[name="plan"][value="' + planFromUrl + '"]');
+      if (planInput) planInput.checked = true;
+    } else {
+      document.querySelector('input[name="plan"][value="3m"]').checked = true;
+    }
+    const planText = {
+      '1m': '1 เดือน / 300 ฿',
+      '3m': '3 เดือน / 750 ฿',
+      '6m': '6 เดือน / 1,400 ฿',
+      '1y': '1 ปี / 2,500 ฿'
+    };
+    document.getElementById('registerForm').addEventListener('submit', event => {
+      event.preventDefault();
+      const password = document.getElementById('registerPassword').value;
+      const confirm = document.getElementById('confirmPassword').value;
+      if (password !== confirm) {
+        showStatus('registerStatus', 'error', 'รหัสผ่านและยืนยันรหัสผ่านไม่ตรงกัน');
+        return;
+      }
+      const serviceType = document.querySelector('[name="serviceType"]:checked').value;
+      const selectedPlan = serviceType === 'fitness' ? document.querySelector('input[name="plan"]:checked').value : null;
+      const member = {
+        name: document.getElementById('fullName').value.trim(),
+        studentId: document.getElementById('studentId').value.trim(),
+        email: document.getElementById('registerEmail').value.trim().toLowerCase(),
+        phone: document.getElementById('phone').value.trim(),
+        serviceType,
+        plan: selectedPlan,
+        planLabel: selectedPlan ? planText[selectedPlan] : 'ยังไม่ได้เลือกแพ็กเกจฟิตเนส',
+        password: password,
+        createdAt: new Date().toISOString()
+      };
+      localStorage.setItem('sportsScienceMember', JSON.stringify(member));
+      showStatus('registerStatus', 'success', serviceType === 'trainer' ? 'สมัครสมาชิกสำเร็จ เข้าสู่ระบบเพื่อเลือกโค้ชและแพ็กเกจฝึกส่วนตัว' : 'สมัครสมาชิกสำเร็จ เลือกแพ็กเกจ ' + member.planLabel + ' แล้ว กำลังไปหน้าเข้าสู่ระบบ...');
+      setTimeout(() => window.location.href = 'login.html', 1200);
+    });
+  </script>
+  <script src="js/ui.js"></script>
+</body>
+</html>

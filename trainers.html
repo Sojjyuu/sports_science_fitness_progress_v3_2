@@ -1,0 +1,127 @@
+<!doctype html>
+<html lang="th">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>ค้นหาเทรนเนอร์ | Sports Science Fitness Club</title>
+  <meta name="description" content="ค้นหา กรอง และเลือกเทรนเนอร์ให้เหมาะกับเป้าหมายการออกกำลังกาย">
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Noto+Sans+Thai:wght@400;500;600;700;800;900&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="css/features.css">
+  <script>
+    window.addEventListener('pageshow', function(event) {
+      if (event.persisted) window.location.reload();
+    });
+    window.addEventListener('storage', function(event) {
+      if (event.key === 'sportsScienceCurrentUser' || event.key === null) window.location.reload();
+    });
+  </script>
+  <link rel="stylesheet" href="css/ui.css">
+</head>
+<body class="feature-page">
+  <header class="ss-header">
+    <div class="ss-container ss-nav-wrap">
+      <a class="ss-brand" href="index.html" aria-label="Sports Science Fitness Club"><img src="assets/logo-ss-fitness-clean.png" alt="Sports Science Fitness Club"></a>
+      <nav class="ss-nav" aria-label="เมนูหลัก"><a href="index.html">หน้าแรก</a><a href="fitness.html">สถานที่ฟิตเนส</a><a href="packages.html">แพ็กเกจ</a><a href="trainers.html" class="active" aria-current="page">เทรนเนอร์</a><a href="health-profile.html">ข้อมูลสุขภาพ</a></nav>
+      <div class="ss-actions ui-auth" data-ss-auth-actions>
+        <a class="ss-btn" href="login.html">เข้าสู่ระบบ</a>
+        <a class="ss-btn primary" href="register.html">สมัครสมาชิก</a>
+      </div>
+      <button class="ss-menu" type="button" data-ss-menu aria-label="เปิดเมนู">☰</button>
+    </div>
+  </header>
+
+  <main>
+    <section class="feature-hero">
+      <div class="ss-container feature-hero-grid">
+        <div>
+          <span class="eyebrow-chip">Trainer matching</span>
+          <h1>หาเทรนเนอร์ที่เข้าใจเป้าหมายของคุณ</h1>
+          <p>ค้นหาจากความเชี่ยวชาญ เป้าหมาย และความต้องการของคุณ ระบบจะใช้ข้อมูลสุขภาพที่บันทึกไว้ช่วยจัดลำดับเทรนเนอร์ที่เหมาะสม</p>
+          <div class="hero-actions">
+            <a class="ss-btn primary" href="health-profile.html">กรอกข้อมูลเพื่อรับคำแนะนำ</a>
+            <a class="ss-btn" href="packages.html?type=trainer">ดูแพ็กเกจเทรนเนอร์</a>
+          </div>
+        </div>
+        <aside class="hero-stat-card" aria-label="สรุปเทรนเนอร์">
+          <strong>6</strong><span>เทรนเนอร์ตัวอย่างพร้อมให้คำแนะนำ</span>
+          <div class="hero-stat-list"><div><span>ความเชี่ยวชาญ</span><b>8 หมวด</b></div><div><span>คะแนนเฉลี่ย</span><b>4.8 / 5</b></div></div>
+        </aside>
+      </div>
+    </section>
+
+    <section class="feature-main">
+      <div class="ss-container">
+        <div class="section-head">
+          <div><span class="section-kicker">Find your coach</span><h2>เลือกเทรนเนอร์</h2><p>ใช้ตัวกรองเพื่อให้เหลือเฉพาะคนที่เหมาะกับคุณ</p></div>
+          <strong id="trainerCount">6 คน</strong>
+        </div>
+
+        <div class="surface filter-panel" aria-label="ตัวกรองเทรนเนอร์">
+          <div class="ss-field"><label for="trainerSearch">ค้นหาชื่อหรือความเชี่ยวชาญ</label><input id="trainerSearch" type="search" placeholder="เช่น ลดไขมัน, เวทเทรนนิ่ง"></div>
+          <div class="ss-field"><label for="specialtyFilter">ความเชี่ยวชาญ</label><select id="specialtyFilter"><option value="">ทั้งหมด</option><option value="fat-loss">ลดไขมัน</option><option value="muscle">เพิ่มกล้ามเนื้อ</option><option value="strength">ความแข็งแรง</option><option value="sport">กีฬาเฉพาะทาง</option><option value="mobility">การเคลื่อนไหว</option><option value="rehab">ฟื้นฟู</option><option value="beginner">ผู้เริ่มต้น</option><option value="nutrition">โภชนาการ</option></select></div>
+          <div class="ss-field"><label for="goalFilter">เป้าหมาย</label><select id="goalFilter"><option value="">ทุกเป้าหมาย</option><option value="weight-loss">ลดไขมัน</option><option value="muscle-gain">เพิ่มกล้ามเนื้อ</option><option value="general">สุขภาพทั่วไป</option><option value="performance">พัฒนาสมรรถภาพ</option><option value="rehabilitation">ฟื้นฟูการเคลื่อนไหว</option></select></div>
+          <div class="ss-field"><label for="genderFilter">เพศเทรนเนอร์</label><select id="genderFilter"><option value="">ไม่จำกัด</option><option value="female">หญิง</option><option value="male">ชาย</option></select></div>
+          <button class="ss-btn soft" id="resetFilters" type="button">ล้างตัวกรอง</button>
+        </div>
+
+        <div class="recommend-banner" id="recommendBanner">
+          <div><strong>คำแนะนำเฉพาะคุณพร้อมแล้ว</strong><p data-recommend-copy>ระบบจัดลำดับเทรนเนอร์จากข้อมูลสุขภาพของคุณ</p></div>
+          <a class="ss-btn success small" href="health-profile.html">แก้ไขข้อมูล</a>
+        </div>
+
+        <div class="trainer-grid" id="trainerGrid" aria-live="polite"></div>
+      </div>
+    </section>
+  </main>
+
+  <footer id="contact" class="site-footer">
+    <div class="container">
+      <div class="footer-grid">
+        <div class="footer-logo">
+          <a class="logo" href="index.html" aria-label="Sports Science Fitness Club">
+            <img class="logo-image" src="assets/logo-ss-fitness-clean.png" alt="Sports Science Fitness Club logo">
+          </a>
+        </div>
+
+        <div class="footer-col">
+          <h3>วิทยาศาสตร์การกีฬา นวัตกรรมและสุขภาพ</h3>
+          <p>มหาวิทยาลัยขอนแก่น วิทยาเขตหนองคาย</p>
+          <div class="contact-line"><span>112 หมู่ 7 บ้านหนองเดิ่น ต.หนองกอมเกาะ<br>อ.เมืองหนองคาย จ.หนองคาย 43000</span></div>
+          <div class="contact-line"><span>042-415600</span></div>
+          <div class="contact-line"><span>is.inbox@kku.ac.th</span></div>
+        </div>
+
+        <div class="footer-col">
+          <h3>ลิงก์ด่วน</h3>
+          <div class="quick-links">
+            <a href="fitness.html">สถานที่ฟิตเนส</a>
+            <a href="#package">แพ็กเกจ</a>
+            <a href="#service">บริการของเรา</a>
+            <a href="#contact">ติดต่อเรา</a>
+          </div>
+        </div>
+
+        <div class="footer-col">
+          <h3>ติดตามข่าวสาร</h3>
+          <p>รับข่าวสารและโปรโมชั่นพิเศษก่อนใคร</p>
+          <form class="newsletter">
+            <input type="email" placeholder="อีเมลของคุณ" aria-label="อีเมลของคุณ">
+            <button type="submit" aria-label="ส่งอีเมล">›</button>
+          </form>
+        </div>
+      </div>
+
+      <div class="footer-bottom">
+        <span>© 2026 Sports Science Fitness Club. Front-end Demo.</span>
+        <div class="socials" aria-label="Social links">
+          <a href="https://www.facebook.com/SportandExerciesScienceKKUNKC" target="_blank" rel="noopener" aria-label="Facebook">f</a>
+        </div>
+      </div>
+    </div>
+  </footer>
+  <script src="js/features.js"></script>
+  <script src="js/ui.js"></script>
+</body>
+</html>

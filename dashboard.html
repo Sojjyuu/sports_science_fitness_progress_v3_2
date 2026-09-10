@@ -1,0 +1,814 @@
+<!doctype html>
+<html lang="th">
+<head>
+  <script>
+    if (!localStorage.getItem('sportsScienceCurrentUser')) window.location.replace('login.html');
+  </script>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <title>แดชบอร์ดสมาชิก | Sports Science Fitness Club</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Noto+Sans+Thai:wght@400;500;600;700;800;900&display=swap" rel="stylesheet">
+  <style>
+    :root {
+      --blue-950: #001f55;
+      --blue-900: #002d73;
+      --blue-800: #003b91;
+      --blue-700: #0051d7;
+      --blue-600: #0b63ff;
+      --blue-500: #2c7dff;
+      --blue-100: #eef5ff;
+      --green: #18a957;
+      --orange: #ff9f1c;
+      --red: #ed3b3b;
+      --ink: #102147;
+      --muted: #63718f;
+      --white: #ffffff;
+      --line: #dbe6fb;
+      --shadow: 0 20px 55px rgba(17, 58, 129, .14);
+      --radius: 22px;
+    }
+
+    * { box-sizing: border-box; }
+    html { scroll-behavior: smooth; }
+    body {
+      margin: 0;
+      font-family: "Noto Sans Thai", system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif;
+      color: var(--ink);
+      background:
+        radial-gradient(circle at 12% 0%, rgba(44,125,255,.14), transparent 30%),
+        radial-gradient(circle at 90% 8%, rgba(0,45,115,.10), transparent 26%),
+        linear-gradient(180deg, #f7fbff 0%, #ffffff 46%, #f2f7ff 100%);
+    }
+    body::-webkit-scrollbar { width: 12px; }
+    body::-webkit-scrollbar-track { background: #eef5ff; }
+    body::-webkit-scrollbar-thumb { background: linear-gradient(180deg, var(--blue-600), var(--blue-900)); border-radius: 999px; border: 3px solid #eef5ff; }
+    a { color: inherit; text-decoration: none; }
+    button, input, select, textarea { font: inherit; }
+    .container { width: min(1120px, calc(100% - 36px)); margin-inline: auto; }
+
+    .site-header {
+      height: 98px;
+      background: rgba(255,255,255,.96);
+      position: sticky;
+      top: 0;
+      z-index: 30;
+      box-shadow: 0 1px 0 rgba(17,58,129,.09);
+      backdrop-filter: blur(18px);
+    }
+    .nav-wrap { height: 100%; display: flex; align-items: center; justify-content: space-between; gap: 28px; }
+    .logo { display: inline-flex; align-items: center; flex: 0 0 auto; line-height: 0; }
+    .site-header .logo-image { width: auto; height: 76px; max-width: 190px; display: block; object-fit: contain; }
+    .main-nav { display: flex; align-items: center; gap: 34px; font-weight: 600; color: #1f2b45; font-size: 15px; }
+    .main-nav a { position: relative; padding: 36px 0 31px; transition: color .22s ease; }
+    .main-nav a:hover, .main-nav a.active { color: var(--blue-600); }
+    .main-nav a::after { content: ""; position: absolute; left: 50%; bottom: 22px; width: 0; height: 3px; border-radius: 999px; background: var(--blue-600); transform: translateX(-50%); transition: width .22s ease; }
+    .main-nav a:hover::after, .main-nav a.active::after { width: 48px; }
+    .actions { display: flex; gap: 14px; align-items: center; }
+    .btn {
+      min-height: 46px;
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+      gap: 10px;
+      border-radius: 8px;
+      padding: 0 22px;
+      font-weight: 800;
+      font-size: 15px;
+      border: 1px solid var(--blue-600);
+      color: var(--blue-600);
+      background: var(--white);
+      cursor: pointer;
+      transition: transform .2s ease, box-shadow .2s ease, background .2s ease;
+    }
+    .btn:hover { transform: translateY(-2px); box-shadow: 0 12px 28px rgba(11,99,255,.18); }
+    .btn-primary { color: var(--white); background: linear-gradient(135deg, var(--blue-500), var(--blue-700)); box-shadow: 0 14px 28px rgba(11,99,255,.24); }
+    .hamburger { display: none; width: 44px; height: 44px; border: 1px solid var(--line); background: #fff; border-radius: 10px; align-items: center; justify-content: center; cursor: pointer; }
+    .hamburger span, .hamburger span::before, .hamburger span::after { display: block; width: 20px; height: 2px; background: var(--blue-700); border-radius: 99px; position: relative; transition: .25s ease; }
+    .hamburger span::before, .hamburger span::after { content: ""; position: absolute; left: 0; }
+    .hamburger span::before { top: -7px; }
+    .hamburger span::after { top: 7px; }
+
+    .dashboard-main { padding: 42px 0 54px; }
+    .welcome {
+      position: relative;
+      overflow: hidden;
+      border-radius: 30px;
+      min-height: 320px;
+      color: #fff;
+      background:
+        linear-gradient(100deg, rgba(0,45,115,.98) 0%, rgba(0,68,160,.92) 45%, rgba(0,88,190,.55) 100%),
+        url("https://images.unsplash.com/photo-1571019614242-c5c5dee9f50b?auto=format&fit=crop&w=1500&q=85") center right / cover no-repeat;
+      box-shadow: var(--shadow);
+    }
+    .welcome::after { content: ""; position: absolute; width: 320px; height: 320px; border-radius: 999px; right: -90px; top: -100px; border: 46px solid rgba(255,255,255,.10); }
+    .welcome-inner { position: relative; z-index: 1; padding: 44px; display: grid; grid-template-columns: 1.15fr .85fr; gap: 34px; align-items: center; }
+    .kicker { width: fit-content; margin: 0 0 14px; padding: 7px 14px; border-radius: 999px; background: rgba(255,255,255,.13); border: 1px solid rgba(255,255,255,.24); color: rgba(255,255,255,.94); font-size: 13px; font-weight: 900; }
+    .welcome h1 { margin: 0; font-size: clamp(34px, 5vw, 58px); line-height: 1.12; font-weight: 900; letter-spacing: -.04em; }
+    .welcome p { margin: 18px 0 0; max-width: 590px; color: rgba(255,255,255,.88); font-size: 18px; line-height: 1.75; font-weight: 500; }
+    .profile-card {
+      justify-self: end;
+      width: min(100%, 360px);
+      padding: 23px;
+      border: 1px solid rgba(255,255,255,.22);
+      border-radius: 24px;
+      background: rgba(255,255,255,.12);
+      backdrop-filter: blur(18px);
+      box-shadow: 0 16px 42px rgba(0,0,0,.16);
+    }
+    .profile-top { display: flex; align-items: center; gap: 15px; }
+    .avatar { width: 64px; height: 64px; border-radius: 22px; display: grid; place-items: center; background: #fff; color: var(--blue-700); font-weight: 900; font-size: 28px; box-shadow: 0 12px 26px rgba(0,0,0,.14); }
+    .profile-top h2 { margin: 0; font-size: 21px; font-weight: 900; line-height: 1.25; }
+    .profile-top span { color: rgba(255,255,255,.82); font-weight: 600; font-size: 14px; }
+    .status-pill { width: fit-content; margin-top: 18px; padding: 8px 13px; border-radius: 999px; background: rgba(24,169,87,.16); border: 1px solid rgba(178,255,207,.35); color: #dcffe8; font-size: 13px; font-weight: 900; }
+    .profile-list { display: grid; gap: 11px; margin-top: 19px; }
+    .profile-row { display: flex; justify-content: space-between; gap: 18px; padding-top: 11px; border-top: 1px solid rgba(255,255,255,.16); color: rgba(255,255,255,.84); font-size: 14px; font-weight: 600; }
+    .profile-row strong { color: #fff; text-align: right; }
+
+    .stats { display: grid; grid-template-columns: repeat(4, 1fr); gap: 18px; margin-top: 22px; }
+    .stat-card { background: rgba(255,255,255,.98); border: 1px solid var(--line); border-radius: 20px; padding: 22px; box-shadow: 0 14px 32px rgba(24,58,117,.08); transition: transform .22s ease, box-shadow .22s ease; }
+    .stat-card:hover { transform: translateY(-5px); box-shadow: 0 20px 42px rgba(24,58,117,.13); }
+    .stat-icon { width: 45px; height: 45px; display: grid; place-items: center; border-radius: 15px; background: var(--blue-100); color: var(--blue-700); font-weight: 900; margin-bottom: 13px; }
+    .stat-card span { display: block; color: var(--muted); font-size: 14px; font-weight: 700; }
+    .stat-card strong { display: block; margin-top: 5px; font-size: 24px; line-height: 1.25; font-weight: 900; color: #12224a; }
+    .stat-card small { display: block; margin-top: 5px; color: #71809c; font-size: 12px; font-weight: 700; }
+
+    .grid-layout { display: grid; grid-template-columns: 1.15fr .85fr; gap: 24px; margin-top: 24px; align-items: start; }
+    .panel { background: #fff; border: 1px solid var(--line); border-radius: 24px; padding: 26px; box-shadow: 0 14px 32px rgba(24,58,117,.08); }
+    .panel-head { display: flex; justify-content: space-between; gap: 18px; align-items: flex-start; margin-bottom: 20px; }
+    .panel h2 { margin: 0; font-size: 24px; font-weight: 900; letter-spacing: -.02em; }
+    .panel-head p { margin: 6px 0 0; color: var(--muted); line-height: 1.65; font-weight: 500; }
+    .mini-btn { border: 1px solid var(--blue-600); background: #fff; color: var(--blue-700); border-radius: 999px; min-height: 38px; padding: 0 16px; font-weight: 900; cursor: pointer; white-space: nowrap; }
+    .mini-btn:hover { background: var(--blue-100); }
+
+    .quick-actions { display: grid; grid-template-columns: repeat(2, 1fr); gap: 14px; }
+    .quick-card { display: flex; gap: 15px; align-items: flex-start; min-height: 122px; padding: 18px; border: 1px solid #d8e4fb; border-radius: 18px; background: linear-gradient(180deg, #fff, #f8fbff); transition: transform .22s ease, border-color .22s ease, box-shadow .22s ease; cursor: pointer; }
+    .quick-card:hover { transform: translateY(-4px); border-color: rgba(11,99,255,.42); box-shadow: 0 16px 30px rgba(24,58,117,.10); }
+    .quick-icon { width: 46px; height: 46px; border-radius: 16px; display: grid; place-items: center; flex: 0 0 auto; background: var(--blue-100); color: var(--blue-700); font-size: 22px; }
+    .quick-card h3 { margin: 0; font-size: 17px; font-weight: 900; }
+    .quick-card p { margin: 6px 0 0; color: var(--muted); line-height: 1.55; font-size: 14px; font-weight: 500; }
+
+    .booking-form { display: grid; gap: 15px; }
+    .form-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 15px; }
+    .field { display: grid; gap: 8px; }
+    .field label { color: #21345f; font-size: 14px; font-weight: 900; }
+    input, select, textarea { width: 100%; height: 50px; border: 1px solid #cfdcf4; border-radius: 12px; background: #fff; color: var(--ink); padding: 0 15px; outline: 0; font-weight: 600; transition: border-color .2s ease, box-shadow .2s ease; }
+    textarea { min-height: 96px; resize: vertical; padding-top: 13px; }
+    input:focus, select:focus, textarea:focus { border-color: var(--blue-600); box-shadow: 0 0 0 4px rgba(11,99,255,.10); }
+    .submit-btn { height: 52px; border: 0; border-radius: 13px; color: #fff; background: linear-gradient(135deg, var(--blue-500), var(--blue-700)); box-shadow: 0 14px 28px rgba(11,99,255,.22); font-weight: 900; cursor: pointer; transition: transform .2s ease, box-shadow .2s ease; }
+    .submit-btn:hover { transform: translateY(-2px); box-shadow: 0 18px 34px rgba(11,99,255,.28); }
+    .status-box { display: none; border-radius: 14px; padding: 13px 15px; font-size: 14px; font-weight: 700; line-height: 1.55; }
+    .status-box.success { display: block; color: #085d2b; background: #eafff1; border: 1px solid #b9f0ca; }
+    .status-box.error { display: block; color: #982525; background: #fff1f1; border: 1px solid #ffd1d1; }
+    .status-box.info { display: block; color: #144f9c; background: #edf5ff; border: 1px solid #c8dcfb; }
+
+    .booking-summary { display: grid; grid-template-columns: repeat(3, 1fr); gap: 12px; margin: 0 0 22px; }
+    .booking-summary-card { padding: 16px; border: 1px solid #d8e4fb; border-radius: 16px; background: #f8fbff; }
+    .booking-summary-card span { display: block; color: var(--muted); font-size: 13px; font-weight: 700; }
+    .booking-summary-card strong { display: block; margin-top: 5px; color: var(--blue-700); font-size: 26px; line-height: 1; }
+    .booking-summary-card.pending strong { color: #a36b00; }
+    .booking-summary-card.cancelled strong { color: #b53b3b; }
+    .booking-list { display: grid; gap: 12px; margin-top: 20px; }
+    .booking-item { display: flex; justify-content: space-between; gap: 14px; align-items: flex-start; padding: 15px; border: 1px solid #d8e4fb; border-radius: 16px; background: #f9fbff; }
+    .booking-item.cancelled { background: #fffafa; border-color: #f0d3d3; }
+    .booking-item-main { min-width: 0; }
+    .booking-item strong { display: block; font-size: 15px; color: #12224a; }
+    .booking-item span { display: block; margin-top: 4px; color: var(--muted); font-size: 13px; font-weight: 600; }
+    .booking-actions { flex: 0 0 auto; display: flex; flex-direction: column; align-items: flex-end; gap: 9px; }
+    .booking-item .tag { display: inline-flex; align-items: center; min-height: 28px; margin: 0; padding: 0 11px; border-radius: 999px; font-size: 12px; font-weight: 900; }
+    .booking-item .tag.pending { background: #fff7e8; color: #9a6500; border: 1px solid #f2d69a; }
+    .booking-item .tag.cancelled { background: #fff0f0; color: #a72d2d; border: 1px solid #efc6c6; }
+    .cancel-booking-btn { min-height: 34px; padding: 0 12px; border: 1px solid #e5b6b6; border-radius: 10px; color: #a72d2d; background: #fff; font-size: 12px; font-weight: 800; cursor: pointer; transition: background .2s ease, transform .2s ease; }
+    .cancel-booking-btn:hover { background: #fff0f0; transform: translateY(-1px); }
+    .empty-state { padding: 18px; border: 1px dashed #c9d8f3; border-radius: 16px; background: #f8fbff; color: var(--muted); font-weight: 600; line-height: 1.65; }
+
+    .confirm-modal { position: fixed; inset: 0; z-index: 100; display: none; place-items: center; padding: 20px; background: rgba(3, 19, 50, .64); backdrop-filter: blur(7px); }
+    .confirm-modal.open { display: grid; }
+    .confirm-dialog { width: min(430px, 100%); padding: 30px; border: 1px solid rgba(11,99,255,.14); border-radius: 26px; background: #fff; box-shadow: 0 28px 80px rgba(0, 22, 66, .34); text-align: center; animation: confirmPop .2s ease both; }
+    .confirm-icon { width: 68px; height: 68px; margin: 0 auto 18px; display: grid; place-items: center; border-radius: 22px; color: #a72d2d; background: #fff0f0; font-size: 31px; }
+    .confirm-dialog h2 { margin: 0 0 9px; color: #12224a; font-size: 24px; }
+    .confirm-dialog p { margin: 0; color: var(--muted); line-height: 1.72; }
+    .confirm-actions { display: grid; grid-template-columns: 1fr 1fr; gap: 12px; margin-top: 24px; }
+    .confirm-btn { min-height: 48px; border-radius: 13px; font-weight: 900; cursor: pointer; transition: transform .2s ease, box-shadow .2s ease; }
+    .confirm-btn:hover { transform: translateY(-2px); }
+    .confirm-btn.back { border: 1px solid #cfdcf4; color: #35517c; background: #f7faff; }
+    .confirm-btn.danger { border: 1px solid #c94343; color: #fff; background: linear-gradient(135deg, #e45858, #ba3030); box-shadow: 0 12px 25px rgba(186,48,48,.22); }
+    @keyframes confirmPop { from { opacity: 0; transform: translateY(12px) scale(.97); } to { opacity: 1; transform: translateY(0) scale(1); } }
+
+    .side-stack { display: grid; gap: 24px; }
+    .membership-bar { position: relative; height: 12px; border-radius: 999px; overflow: hidden; background: #e5edfb; margin: 17px 0 12px; }
+    .membership-fill { position: absolute; inset: 0 auto 0 0; width: 0; border-radius: inherit; background: linear-gradient(90deg, var(--blue-500), var(--green)); transition: width .6s ease; }
+    .muted-text { color: var(--muted); line-height: 1.65; font-weight: 500; margin: 0; }
+    .profile-table { display: grid; gap: 12px; margin-top: 18px; }
+    .profile-table div { display: flex; justify-content: space-between; gap: 16px; padding-bottom: 12px; border-bottom: 1px solid #edf2fd; color: var(--muted); font-size: 14px; font-weight: 700; }
+    .profile-table strong { color: var(--ink); text-align: right; }
+    .progress-grid { display: grid; grid-template-columns: repeat(7, 1fr); gap: 8px; margin-top: 18px; }
+    .day-box { height: 48px; border-radius: 14px; display: grid; place-items: center; background: var(--blue-100); color: var(--blue-700); font-weight: 900; font-size: 12px; }
+    .day-box.done { background: linear-gradient(135deg, var(--blue-500), var(--blue-700)); color: #fff; box-shadow: 0 10px 20px rgba(11,99,255,.20); }
+
+    .site-footer { margin-top: 0; background: radial-gradient(circle at 14% 10%, rgba(44,125,255,.25), transparent 28%), linear-gradient(135deg, #003176 0%, #004aa8 50%, #002d73 100%); color: #fff; padding: 43px 0 25px; position: relative; overflow: hidden; }
+    .footer-grid { display: grid; grid-template-columns: 1.2fr 1.45fr .8fr 1.35fr; gap: 48px; align-items: start; padding-bottom: 30px; border-bottom: 1px solid rgba(255,255,255,.18); }
+    .footer-logo .logo { background: rgba(255,255,255,.98); border-radius: 16px; padding: 10px 16px; box-shadow: 0 16px 35px rgba(0,0,0,.12); }
+    .footer-logo .logo-image { width: auto; height: 82px; max-width: 230px; display: block; object-fit: contain; }
+    .footer-col h3 { margin: 0 0 14px; font-size: 19px; font-weight: 900; }
+    .footer-col p, .footer-col a { color: rgba(255,255,255,.86); font-size: 15px; line-height: 1.65; font-weight: 500; }
+    .contact-line { display: flex; gap: 11px; margin: 9px 0; align-items: flex-start; }
+    .quick-links { display: grid; gap: 9px; }
+    .newsletter { display: flex; align-items: center; margin-top: 12px; height: 47px; border: 1px solid rgba(255,255,255,.85); border-radius: 999px; overflow: hidden; background: rgba(255,255,255,.08); }
+    .newsletter input { min-width: 0; flex: 1; height: 100%; border: 0; background: transparent; color: #fff; outline: 0; padding: 0 18px; }
+    .newsletter input::placeholder { color: rgba(255,255,255,.86); }
+    .newsletter button { width: 56px; height: 100%; border: 0; background: transparent; color: #fff; font-size: 32px; cursor: pointer; font-weight: 900; }
+    .footer-bottom { display: flex; justify-content: space-between; align-items: center; padding-top: 18px; color: rgba(255,255,255,.75); font-size: 13px; }
+    .socials { display: flex; gap: 18px; }
+    .socials a { width: 24px; height: 24px; display: inline-grid; place-items: center; border-radius: 999px; color: #fff; opacity: .86; }
+
+    @media (max-width: 1050px) {
+      .main-nav { gap: 22px; font-size: 14px; }
+      .actions .btn { padding-inline: 16px; }
+      .welcome-inner, .grid-layout { grid-template-columns: 1fr; }
+      .profile-card { justify-self: start; }
+      .stats { grid-template-columns: repeat(2, 1fr); }
+      .footer-grid { grid-template-columns: repeat(2, 1fr); }
+    }
+    @media (max-width: 820px) {
+      .site-header { height: 82px; }
+      .site-header .logo-image { height: 62px; max-width: 142px; }
+      .hamburger { display: inline-flex; }
+      .main-nav, .actions { position: fixed; left: 18px; right: 18px; display: none; background: #fff; box-shadow: var(--shadow); border: 1px solid var(--line); }
+      .main-nav { top: 90px; border-radius: 18px 18px 0 0; flex-direction: column; align-items: stretch; padding: 16px; gap: 0; }
+      .main-nav a { padding: 13px 14px; border-radius: 10px; }
+      .main-nav a::after { display: none; }
+      .main-nav a:hover, .main-nav a.active { background: var(--blue-100); }
+      .actions { top: 416px; border-top: 0; border-radius: 0 0 18px 18px; padding: 16px; flex-direction: column; }
+      .actions .btn { width: 100%; }
+      body.menu-open .main-nav, body.menu-open .actions { display: flex; }
+      body.menu-open .hamburger span { background: transparent; }
+      body.menu-open .hamburger span::before { transform: rotate(45deg); top: 0; }
+      body.menu-open .hamburger span::after { transform: rotate(-45deg); top: 0; }
+      .dashboard-main { padding: 28px 0 42px; }
+      .welcome-inner { padding: 30px 24px; }
+      .quick-actions, .form-grid { grid-template-columns: 1fr; }
+      .panel { padding: 22px; }
+      .panel-head { flex-direction: column; }
+      .footer-grid { gap: 30px; }
+    }
+    @media (max-width: 620px) {
+      .container { width: min(100% - 28px, 1120px); }
+      .welcome { border-radius: 22px; }
+      .stats, .footer-grid { grid-template-columns: 1fr; }
+      .profile-card { width: 100%; }
+      .booking-item { flex-direction: column; }
+      .booking-summary { grid-template-columns: 1fr; }
+      .booking-actions { width: 100%; flex-direction: row; justify-content: space-between; align-items: center; }
+      .confirm-dialog { padding: 25px 20px; border-radius: 22px; }
+      .confirm-actions { grid-template-columns: 1fr; }
+      .progress-grid { gap: 6px; }
+      .day-box { height: 42px; border-radius: 12px; }
+      .footer-bottom { flex-direction: column; gap: 15px; align-items: flex-start; }
+      .footer-logo .logo-image { height: 76px; max-width: 200px; }
+    }
+  </style>
+  <script>
+    window.addEventListener('pageshow', function(event) {
+      if (event.persisted) window.location.reload();
+    });
+    window.addEventListener('storage', function(event) {
+      if (event.key === 'sportsScienceCurrentUser' || event.key === null) window.location.reload();
+    });
+  </script>
+  <link rel="stylesheet" href="css/ui.css">
+</head>
+<body>
+  <header class="site-header">
+    <div class="container nav-wrap">
+      <a class="logo" href="index.html#home" aria-label="Sports Science Fitness Club">
+        <img class="logo-image" src="assets/logo-ss-fitness-clean.png" alt="Sports Science Fitness Club logo">
+      </a>
+      <nav class="main-nav" aria-label="Main navigation"><a href="index.html">หน้าแรก</a><a href="fitness.html">สถานที่ฟิตเนส</a><a href="packages.html">แพ็กเกจ</a><a href="trainers.html">เทรนเนอร์</a><a href="health-profile.html">ข้อมูลสุขภาพ</a></nav>
+      <div class="actions ui-auth">
+        <a class="btn" href="index.html#home">หน้าแรก</a>
+        <button class="btn btn-primary" type="button" id="logoutBtn">ออกจากระบบ</button>
+      </div>
+      <button class="hamburger" type="button" aria-label="เปิดเมนู"><span></span></button>
+    </div>
+  </header>
+
+  <main class="dashboard-main">
+    <section class="container welcome">
+      <div class="welcome-inner">
+        <div>
+          <p class="kicker">MEMBER DASHBOARD</p>
+          <h1>สวัสดี, <span id="heroName">สมาชิก</span></h1>
+          <p>เช็กสถานะสมาชิก จัดการการจอง และดูข้อมูลแพ็กเกจของคุณได้ในที่เดียว</p>
+        </div>
+        <aside class="profile-card" aria-label="ข้อมูลสมาชิกโดยย่อ">
+          <div class="profile-top">
+            <div class="avatar" id="avatarText">S</div>
+            <div>
+              <h2 id="profileName">สมาชิก</h2>
+              <span id="profileEmail">member@email.com</span>
+            </div>
+          </div>
+          <div class="status-pill" id="memberStatus">● สมาชิกใช้งานอยู่</div>
+          <div class="profile-list">
+            <div class="profile-row"><span>รหัสสมาชิก</span><strong id="memberCode">SS-0000</strong></div>
+            <div class="profile-row"><span>แพ็กเกจ</span><strong id="profilePlan">-</strong></div>
+            <div class="profile-row"><span>หมดอายุ</span><strong id="profileExpire">-</strong></div>
+          </div>
+        </aside>
+      </div>
+    </section>
+
+    <section class="container stats" aria-label="ข้อมูลสรุปสมาชิก">
+      <article class="stat-card">
+        
+        <span>แพ็กเกจปัจจุบัน</span>
+        <strong id="statPlan">-</strong>
+        <small id="statPlanHint">ข้อมูลแพ็กเกจสมาชิก</small>
+      </article>
+      <article class="stat-card">
+        
+        <span>วันที่เริ่มสมาชิก</span>
+        <strong id="statStart">-</strong>
+        <small>นับจากวันที่สมัคร</small>
+      </article>
+      <article class="stat-card">
+        
+        <span>วันคงเหลือ</span>
+        <strong id="statDays">-</strong>
+        <small id="statDaysHint">ก่อนหมดอายุสมาชิก</small>
+      </article>
+      <article class="stat-card">
+        
+        <span>คำขอจองทั้งหมด</span>
+        <strong id="statBookings">0 รายการ</strong>
+        <small>บันทึกในเครื่องของคุณ</small>
+      </article>
+    </section>
+
+    <section class="container grid-layout">
+      <div class="panel">
+        <div class="panel-head">
+          <div>
+            <h2>เมนูใช้งานด่วน</h2>
+            <p>วางโครงสำหรับระบบสมาชิกจริง เช่น จองคิว ต่ออายุ และดูประวัติการใช้งาน</p>
+          </div>
+        </div>
+        <div class="quick-actions">
+          <a class="quick-card" href="#bookingForm">
+            
+            <div><h3>จองคิวใช้บริการ</h3><p>เลือกวันที่ เวลา และประเภทบริการที่ต้องการจอง</p></div>
+          </a>
+          <a class="quick-card" href="packages.html">
+            
+            <div><h3>แพ็กเกจของฉัน</h3><p>เลือกแพ็กเกจฟิตเนสหรือแพ็กเกจเทรนเนอร์แยกกัน</p></div>
+          </a>
+          <button class="quick-card" type="button" id="editProfileBtn">
+            
+            <div data-dashboard-health><h3>ข้อมูลสุขภาพ</h3><p>คำนวณ BMI, TDEE และพลังงานต่อวัน</p></div>
+          </button>
+          <a class="quick-card" href="trainers.html">
+            
+            <div data-dashboard-trainer><h3>เทรนเนอร์ของฉัน</h3><p>ค้นหาและเลือกเทรนเนอร์ที่เหมาะกับเป้าหมาย</p></div>
+          </a>
+          <button class="quick-card" type="button" id="checkInBtn">
+            
+            <div><h3>บันทึกเข้าใช้วันนี้</h3><p>เพิ่มตัวอย่างการเช็กอินของสัปดาห์นี้ในหน้าแดชบอร์ด</p></div>
+          </button>
+        </div>
+      </div>
+
+      <aside class="side-stack">
+        <section class="panel">
+          <div class="panel-head">
+            <div>
+              <h2>สถานะสมาชิก</h2>
+              <p>ความคืบหน้าของแพ็กเกจตามวันใช้งาน</p>
+            </div>
+          </div>
+          <div class="membership-bar"><div class="membership-fill" id="membershipFill"></div></div>
+          <p class="muted-text" id="membershipNote">กำลังโหลดข้อมูลสมาชิก...</p>
+        </section>
+
+        <section class="panel">
+          <div class="panel-head">
+            <div>
+              <h2>ข้อมูลโปรไฟล์</h2>
+              <p>ข้อมูลที่บันทึกจากหน้าสมัครสมาชิก</p>
+            </div>
+          </div>
+          <div class="profile-table">
+            <div><span>ชื่อ-นามสกุล</span><strong id="tableName">-</strong></div>
+            <div><span>รหัสนักศึกษา/บุคลากร</span><strong id="tableStudent">-</strong></div>
+            <div><span>เบอร์โทร</span><strong id="tablePhone">-</strong></div>
+            <div><span>อีเมล</span><strong id="tableEmail">-</strong></div>
+          </div>
+        </section>
+      </aside>
+    </section>
+
+    <section class="container grid-layout">
+      <div class="panel">
+        <div class="panel-head">
+          <div>
+            <h2>จองคิวใช้บริการ</h2>
+            <p>ส่งคำขอจองและเก็บรายการไว้ในเครื่องด้วย localStorage เพื่อรอการตรวจสอบ</p>
+          </div>
+        </div>
+        <div class="booking-summary" aria-label="สรุปสถานะคำขอจอง">
+          <article class="booking-summary-card">
+            <span>คำขอทั้งหมด</span>
+            <strong id="bookingTotal">0</strong>
+          </article>
+          <article class="booking-summary-card pending">
+            <span>รอตรวจสอบ</span>
+            <strong id="bookingPending">0</strong>
+          </article>
+          <article class="booking-summary-card cancelled">
+            <span>ยกเลิกแล้ว</span>
+            <strong id="bookingCancelled">0</strong>
+          </article>
+        </div>
+        <form class="booking-form" id="bookingForm">
+          <div id="bookingStatus" class="status-box" aria-live="polite"></div>
+          <div class="form-grid">
+            <div class="field">
+              <label for="serviceType">ประเภทบริการ</label>
+              <select id="serviceType" required>
+                <option value="ใช้บริการฟิตเนส">ใช้บริการฟิตเนส</option>
+                <option value="จองเทรนเนอร์">จองเทรนเนอร์</option>
+                <option value="วัดสมรรถภาพร่างกาย">วัดสมรรถภาพร่างกาย</option>
+                <option value="ปรึกษาโปรแกรมออกกำลังกาย">ปรึกษาโปรแกรมออกกำลังกาย</option>
+              </select>
+            </div>
+            <div class="field">
+              <label for="bookingDate">วันที่</label>
+              <input id="bookingDate" type="date" required>
+            </div>
+          </div>
+          <div class="form-grid">
+            <div class="field">
+              <label for="bookingTime">เวลา</label>
+              <select id="bookingTime" required>
+                <option value="08:00 - 09:00">08:00 - 09:00</option>
+                <option value="09:00 - 10:00">09:00 - 10:00</option>
+                <option value="10:00 - 11:00">10:00 - 11:00</option>
+                <option value="11:00 - 12:00">11:00 - 12:00</option>
+                <option value="12:00 - 13:00">12:00 - 13:00</option>
+                <option value="13:00 - 14:00">13:00 - 14:00</option>
+                <option value="14:00 - 15:00">14:00 - 15:00</option>
+                <option value="15:00 - 16:00">15:00 - 16:00</option>
+                <option value="16:00 - 17:00">16:00 - 17:00</option>
+                <option value="17:00 - 18:00">17:00 - 18:00</option>
+                <option value="18:00 - 19:00">18:00 - 19:00</option>
+                <option value="19:00 - 20:00">19:00 - 20:00</option>
+              </select>
+            </div>
+            <div class="field">
+              <label for="bookingNote">หมายเหตุ</label>
+              <input id="bookingNote" type="text" placeholder="เช่น ต้องการเทรนเนอร์เบื้องต้น">
+            </div>
+          </div>
+          <button class="submit-btn" type="submit">ส่งคำขอจอง</button>
+        </form>
+        <div class="booking-list" id="bookingList"></div>
+      </div>
+
+      <aside class="side-stack">
+        <section class="panel">
+          <div class="panel-head">
+            <div>
+              <h2>เช็กอินสัปดาห์นี้</h2>
+              <p>ตัวอย่างการติดตามการเข้าใช้บริการ</p>
+            </div>
+          </div>
+          <div class="progress-grid" id="progressGrid"></div>
+          <p class="muted-text" style="margin-top:15px;" id="checkInNote">กด “บันทึกเข้าใช้วันนี้” เพื่อเพิ่มข้อมูลตัวอย่าง</p>
+        </section>
+
+        <section class="panel">
+          <div class="panel-head">
+            <div>
+              <h2>แจ้งเตือน</h2>
+              <p>ประกาศตัวอย่างสำหรับสมาชิก</p>
+            </div>
+          </div>
+          <div class="booking-list">
+            <div class="booking-item"><div><strong> เวลาให้บริการ</strong><span>จันทร์ - ศุกร์ 08:00 - 20:00 น.</span></div></div>
+            <div class="booking-item"><div><strong> อย่าลืมนำบัตรนักศึกษา</strong><span>ใช้ยืนยันตัวตนก่อนเข้าใช้บริการ</span></div></div>
+          </div>
+        </section>
+      </aside>
+    </section>
+  </main>
+
+  <footer id="contact" class="site-footer">
+    <div class="container">
+      <div class="footer-grid">
+        <div class="footer-logo">
+          <a class="logo" href="index.html" aria-label="Sports Science Fitness Club">
+            <img class="logo-image" src="assets/logo-ss-fitness-clean.png" alt="Sports Science Fitness Club logo">
+          </a>
+        </div>
+
+        <div class="footer-col">
+          <h3>วิทยาศาสตร์การกีฬา นวัตกรรมและสุขภาพ</h3>
+          <p>มหาวิทยาลัยขอนแก่น วิทยาเขตหนองคาย</p>
+          <div class="contact-line"><span>112 หมู่ 7 บ้านหนองเดิ่น ต.หนองกอมเกาะ<br>อ.เมืองหนองคาย จ.หนองคาย 43000</span></div>
+          <div class="contact-line"><span>042-415600</span></div>
+          <div class="contact-line"><span>is.inbox@kku.ac.th</span></div>
+        </div>
+
+        <div class="footer-col">
+          <h3>ลิงก์ด่วน</h3>
+          <div class="quick-links">
+            <a href="fitness.html">สถานที่ฟิตเนส</a>
+            <a href="#package">แพ็กเกจ</a>
+            <a href="#service">บริการของเรา</a>
+            <a href="#contact">ติดต่อเรา</a>
+          </div>
+        </div>
+
+        <div class="footer-col">
+          <h3>ติดตามข่าวสาร</h3>
+          <p>รับข่าวสารและโปรโมชั่นพิเศษก่อนใคร</p>
+          <form class="newsletter">
+            <input type="email" placeholder="อีเมลของคุณ" aria-label="อีเมลของคุณ">
+            <button type="submit" aria-label="ส่งอีเมล">›</button>
+          </form>
+        </div>
+      </div>
+
+      <div class="footer-bottom">
+        <span>© 2026 Sports Science Fitness Club. Front-end Demo.</span>
+        <div class="socials" aria-label="Social links">
+          <a href="https://www.facebook.com/SportandExerciesScienceKKUNKC" target="_blank" rel="noopener" aria-label="Facebook">f</a>
+        </div>
+      </div>
+    </div>
+  </footer>
+
+  <div class="confirm-modal" id="cancelConfirmModal" role="dialog" aria-modal="true" aria-labelledby="cancelConfirmTitle" aria-hidden="true">
+    <div class="confirm-dialog">
+      <div class="confirm-icon" aria-hidden="true">✕</div>
+      <h2 id="cancelConfirmTitle">ยืนยันการยกเลิกคำขอ</h2>
+      <p>เมื่อลบคำขอนี้แล้ว สถานะจะเปลี่ยนเป็น “ยกเลิกโดยสมาชิก” และไม่สามารถส่งกลับไปรอตรวจสอบได้</p>
+      <div class="confirm-actions">
+        <button class="confirm-btn back" type="button" id="cancelModalClose">กลับไป</button>
+        <button class="confirm-btn danger" type="button" id="cancelModalConfirm">ยืนยันยกเลิก</button>
+      </div>
+    </div>
+  </div>
+
+  <script>
+    const hamburger = document.querySelector('.hamburger');
+    hamburger.addEventListener('click', () => document.body.classList.toggle('menu-open'));
+    document.querySelectorAll('a[href^="#"], a[href*=".html"]').forEach(link => {
+      link.addEventListener('click', () => document.body.classList.remove('menu-open'));
+    });
+    document.querySelectorAll('.newsletter').forEach(form => {
+      form.addEventListener('submit', event => {
+        event.preventDefault();
+        const input = event.currentTarget.querySelector('input');
+        if (!input.value.trim()) return;
+        alert('ขอบคุณสำหรับการติดตามข่าวสาร');
+        input.value = '';
+      });
+    });
+
+    const planMeta = {
+      '1m': { label: '1 เดือน / 300 ฿', short: '1 เดือน', months: 1 },
+      '3m': { label: '3 เดือน / 750 ฿', short: '3 เดือน', months: 3 },
+      '6m': { label: '6 เดือน / 1,400 ฿', short: '6 เดือน', months: 6 },
+      '1y': { label: '1 ปี / 2,500 ฿', short: '1 ปี', months: 12 }
+    };
+
+    const demoMember = {
+      name: 'สมาชิกตัวอย่าง',
+      studentId: 'SS-DEMO',
+      email: 'demo@sportscience.local',
+      phone: '-',
+      plan: '3m',
+      planLabel: '3 เดือน / 750 ฿',
+      createdAt: new Date().toISOString()
+    };
+
+    const storedMember = JSON.parse(localStorage.getItem('sportsScienceCurrentUser') || 'null');
+    const member = storedMember || demoMember;
+    const bookingsKey = 'sportsScienceBookings';
+    const checkinsKey = 'sportsScienceCheckins';
+
+    function bahtDate(date) {
+      return date.toLocaleDateString('th-TH', { year: 'numeric', month: 'short', day: 'numeric' });
+    }
+    function addMonths(date, months) {
+      const d = new Date(date);
+      d.setMonth(d.getMonth() + months);
+      return d;
+    }
+    function getInitials(name) {
+      return (name || 'S').trim().slice(0, 1).toUpperCase();
+    }
+    function getMemberCode(member) {
+      const raw = (member.studentId || member.email || '0000').toString().replace(/[^A-Za-z0-9]/g, '').slice(-4).toUpperCase();
+      return 'SS-' + (raw || '0000');
+    }
+
+    const meta = planMeta[member.plan] || { label: member.planLabel || 'ยังไม่ได้เลือกแพ็กเกจ', short: member.planLabel || '-', months: 1 };
+    const startDate = member.createdAt ? new Date(member.createdAt) : new Date();
+    const expireDate = addMonths(startDate, meta.months);
+    const now = new Date();
+    const totalMs = Math.max(expireDate - startDate, 1);
+    const usedMs = Math.max(now - startDate, 0);
+    const daysLeft = Math.max(Math.ceil((expireDate - now) / 86400000), 0);
+    const progress = Math.min(Math.round((usedMs / totalMs) * 100), 100);
+
+    document.getElementById('heroName').textContent = member.name || 'สมาชิก';
+    document.getElementById('profileName').textContent = member.name || 'สมาชิก';
+    document.getElementById('profileEmail').textContent = member.email || '-';
+    document.getElementById('avatarText').textContent = getInitials(member.name);
+    document.getElementById('memberCode').textContent = getMemberCode(member);
+    document.getElementById('profilePlan').textContent = meta.short;
+    document.getElementById('profileExpire').textContent = bahtDate(expireDate);
+    document.getElementById('statPlan').textContent = meta.short;
+    document.getElementById('statPlanHint').textContent = meta.label;
+    document.getElementById('statStart').textContent = bahtDate(startDate);
+    document.getElementById('statDays').textContent = daysLeft + ' วัน';
+    document.getElementById('membershipFill').style.width = Math.max(8, progress) + '%';
+    document.getElementById('membershipNote').textContent = storedMember ? ('ใช้แพ็กเกจไปแล้วประมาณ ' + progress + '% เหลืออีก ' + daysLeft + ' วัน') : 'ยังไม่มีข้อมูลล็อกอินจริง แสดงข้อมูลตัวอย่างก่อน กรุณาสมัครสมาชิกหรือเข้าสู่ระบบ';
+    if (!member.plan) {
+      document.getElementById('profileExpire').textContent = '-';
+      document.getElementById('statStart').textContent = '-';
+      document.getElementById('statDays').textContent = '-';
+      document.getElementById('membershipFill').style.width = '0%';
+      document.getElementById('membershipNote').textContent = 'ยังไม่ได้เลือกแพ็กเกจเข้าใช้ฟิตเนส';
+    }
+    document.getElementById('tableName').textContent = member.name || '-';
+    document.getElementById('tableStudent').textContent = member.studentId || '-';
+    document.getElementById('tablePhone').textContent = member.phone || '-';
+    document.getElementById('tableEmail').textContent = member.email || '-';
+    if (!storedMember) {
+      document.getElementById('memberStatus').textContent = '● โหมดตัวอย่าง';
+      document.getElementById('memberStatus').style.background = 'rgba(255,159,28,.16)';
+      document.getElementById('memberStatus').style.borderColor = 'rgba(255,218,158,.45)';
+      document.getElementById('memberStatus').style.color = '#fff2d8';
+    }
+
+    const dateInput = document.getElementById('bookingDate');
+    dateInput.min = new Date().toISOString().split('T')[0];
+    dateInput.value = dateInput.min;
+
+    function showStatus(id, type, message) {
+      const box = document.getElementById(id);
+      box.className = 'status-box ' + type;
+      box.textContent = message;
+    }
+    function getBookings() {
+      return JSON.parse(localStorage.getItem(bookingsKey) || '[]');
+    }
+    function saveBookings(bookings) {
+      localStorage.setItem(bookingsKey, JSON.stringify(bookings));
+    }
+    function escapeHTML(value) {
+      return String(value ?? '').replace(/[&<>"']/g, character => ({
+        '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;', "'": '&#039;'
+      }[character]));
+    }
+    function renderBookings() {
+      const list = document.getElementById('bookingList');
+      const memberBookings = getBookings().filter(item => item.email === member.email);
+      const pendingCount = memberBookings.filter(item => (item.status || 'รอตรวจสอบ') === 'รอตรวจสอบ').length;
+      const cancelledCount = memberBookings.filter(item => item.status === 'ยกเลิกโดยสมาชิก').length;
+      const bookings = memberBookings.slice().reverse();
+      document.getElementById('statBookings').textContent = memberBookings.length + ' รายการ';
+      document.getElementById('bookingTotal').textContent = memberBookings.length;
+      document.getElementById('bookingPending').textContent = pendingCount;
+      document.getElementById('bookingCancelled').textContent = cancelledCount;
+      if (!bookings.length) {
+        list.innerHTML = '<div class="empty-state">ยังไม่มีคำขอจอง ลองเลือกบริการ วันที่ และเวลา แล้วกดส่งคำขอจองได้เลย</div>';
+        return;
+      }
+      list.innerHTML = bookings.map(item => {
+        const status = item.status || 'รอตรวจสอบ';
+        const canCancel = status === 'รอตรวจสอบ';
+        const statusClass = status === 'ยกเลิกโดยสมาชิก' ? 'cancelled' : 'pending';
+        return `
+          <div class="booking-item ${statusClass === 'cancelled' ? 'cancelled' : ''}">
+            <div class="booking-item-main">
+              <strong>${escapeHTML(item.service)}</strong>
+              <span>${escapeHTML(item.date)} • ${escapeHTML(item.time)}${item.note ? ' • ' + escapeHTML(item.note) : ''}</span>
+            </div>
+            <div class="booking-actions">
+              <span class="tag ${statusClass}">${escapeHTML(status)}</span>
+              ${canCancel ? `<button class="cancel-booking-btn" type="button" data-booking-id="${escapeHTML(item.id)}">ยกเลิกคำขอ</button>` : ''}
+            </div>
+          </div>
+        `;
+      }).join('');
+    }
+
+    document.getElementById('bookingForm').addEventListener('submit', event => {
+      event.preventDefault();
+      const booking = {
+        id: Date.now(),
+        email: member.email,
+        service: document.getElementById('serviceType').value,
+        date: document.getElementById('bookingDate').value,
+        time: document.getElementById('bookingTime').value,
+        note: document.getElementById('bookingNote').value.trim(),
+        status: 'รอตรวจสอบ',
+        createdAt: new Date().toISOString()
+      };
+      const bookings = getBookings();
+      bookings.push(booking);
+      saveBookings(bookings);
+      showStatus('bookingStatus', 'success', 'ส่งคำขอจองแล้ว: ' + booking.service + ' วันที่ ' + booking.date + ' เวลา ' + booking.time + ' • สถานะรอตรวจสอบ');
+      document.getElementById('bookingNote').value = '';
+      renderBookings();
+    });
+
+    const cancelConfirmModal = document.getElementById('cancelConfirmModal');
+    const cancelModalClose = document.getElementById('cancelModalClose');
+    const cancelModalConfirm = document.getElementById('cancelModalConfirm');
+    let pendingCancelBookingId = null;
+
+    function openCancelModal(bookingId) {
+      pendingCancelBookingId = bookingId;
+      cancelConfirmModal.classList.add('open');
+      cancelConfirmModal.setAttribute('aria-hidden', 'false');
+      cancelModalConfirm.focus();
+    }
+    function closeCancelModal() {
+      pendingCancelBookingId = null;
+      cancelConfirmModal.classList.remove('open');
+      cancelConfirmModal.setAttribute('aria-hidden', 'true');
+    }
+
+    document.getElementById('bookingList').addEventListener('click', event => {
+      const cancelButton = event.target.closest('.cancel-booking-btn');
+      if (!cancelButton) return;
+      openCancelModal(cancelButton.dataset.bookingId);
+    });
+
+    cancelModalConfirm.addEventListener('click', () => {
+      if (!pendingCancelBookingId) return;
+      const bookings = getBookings();
+      const booking = bookings.find(item => String(item.id) === pendingCancelBookingId && item.email === member.email);
+      if (!booking || (booking.status || 'รอตรวจสอบ') !== 'รอตรวจสอบ') {
+        closeCancelModal();
+        return;
+      }
+      booking.status = 'ยกเลิกโดยสมาชิก';
+      booking.updatedAt = new Date().toISOString();
+      saveBookings(bookings);
+      closeCancelModal();
+      showStatus('bookingStatus', 'info', 'ยกเลิกคำขอเรียบร้อยแล้ว สามารถตรวจสอบสถานะได้จากรายการด้านล่าง');
+      renderBookings();
+    });
+    cancelModalClose.addEventListener('click', closeCancelModal);
+    cancelConfirmModal.addEventListener('click', event => {
+      if (event.target === cancelConfirmModal) closeCancelModal();
+    });
+    document.addEventListener('keydown', event => {
+      if (event.key === 'Escape' && cancelConfirmModal.classList.contains('open')) closeCancelModal();
+    });
+
+    const days = ['จ', 'อ', 'พ', 'พฤ', 'ศ', 'ส', 'อา'];
+    function getCheckins() {
+      return JSON.parse(localStorage.getItem(checkinsKey) || '{}');
+    }
+    function saveCheckins(checkins) {
+      localStorage.setItem(checkinsKey, JSON.stringify(checkins));
+    }
+    function renderCheckins() {
+      const grid = document.getElementById('progressGrid');
+      const checkins = getCheckins()[member.email] || [];
+      grid.innerHTML = days.map((day, index) => `<div class="day-box ${checkins.includes(index) ? 'done' : ''}">${day}</div>`).join('');
+      document.getElementById('checkInNote').textContent = 'เช็กอินแล้ว ' + checkins.length + ' วันในสัปดาห์นี้';
+    }
+    document.getElementById('checkInBtn').addEventListener('click', () => {
+      const checkins = getCheckins();
+      const current = checkins[member.email] || [];
+      const dayIndex = (new Date().getDay() + 6) % 7;
+      if (!current.includes(dayIndex)) current.push(dayIndex);
+      checkins[member.email] = current;
+      saveCheckins(checkins);
+      renderCheckins();
+    });
+    document.getElementById('editProfileBtn').addEventListener('click', () => {
+      window.location.href = 'health-profile.html';
+    });
+    document.getElementById('logoutBtn').addEventListener('click', () => {
+      localStorage.removeItem('sportsScienceCurrentUser');
+      localStorage.removeItem('ssf_current_user');
+      window.location.href = 'login.html';
+    });
+
+    renderBookings();
+    renderCheckins();
+  </script>
+  <script src="js/features.js"></script>
+  <script src="js/ui.js"></script>
+</body>
+</html>

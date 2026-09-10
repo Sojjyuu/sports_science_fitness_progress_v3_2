@@ -1,0 +1,133 @@
+<!doctype html>
+<html lang="th">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>ข้อมูลสุขภาพ | Sports Science Fitness Club</title>
+  <meta name="description" content="บันทึกข้อมูลสุขภาพ คำนวณ BMI BMR TDEE และพลังงานที่เหมาะสม">
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Noto+Sans+Thai:wght@400;500;600;700;800;900&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="css/features.css">
+  <script>
+    window.addEventListener('pageshow', function(event) {
+      if (event.persisted) window.location.reload();
+    });
+    window.addEventListener('storage', function(event) {
+      if (event.key === 'sportsScienceCurrentUser' || event.key === null) window.location.reload();
+    });
+  </script>
+  <link rel="stylesheet" href="css/ui.css">
+</head>
+<body class="feature-page">
+  <header class="ss-header">
+    <div class="ss-container ss-nav-wrap">
+      <a class="ss-brand" href="index.html"><img src="assets/logo-ss-fitness-clean.png" alt="Sports Science Fitness Club"></a>
+      <nav class="ss-nav" aria-label="เมนูหลัก"><a href="index.html">หน้าแรก</a><a href="fitness.html">สถานที่ฟิตเนส</a><a href="packages.html">แพ็กเกจ</a><a href="trainers.html">เทรนเนอร์</a><a href="health-profile.html" class="active" aria-current="page">ข้อมูลสุขภาพ</a></nav>
+      <div class="ss-actions ui-auth" data-ss-auth-actions><a class="ss-btn" href="login.html">เข้าสู่ระบบ</a><a class="ss-btn primary" href="register.html">สมัครสมาชิก</a></div>
+      <button class="ss-menu" type="button" data-ss-menu aria-label="เปิดเมนู">☰</button>
+    </div>
+  </header>
+
+  <main>
+    <section class="feature-hero">
+      <div class="ss-container feature-hero-grid">
+        <div><span class="eyebrow-chip">Health profile</span><h1>รู้จักร่างกายก่อนเริ่มวางแผน</h1><p>สวัสดี <strong data-health-user-name>สมาชิก</strong> กรอกข้อมูลพื้นฐานเพื่อคำนวณ BMI, BMR, TDEE และพลังงานต่อวันที่เหมาะกับเป้าหมาย พร้อมใช้ช่วยแนะนำเทรนเนอร์</p></div>
+        <aside class="hero-stat-card"><strong>4</strong><span>ค่าหลักที่ระบบคำนวณ</span><div class="hero-stat-list"><div><span>องค์ประกอบร่างกาย</span><b>BMI</b></div><div><span>พลังงานต่อวัน</span><b>TDEE</b></div></div></aside>
+      </div>
+    </section>
+
+    <section class="feature-main">
+      <div class="ss-container">
+        <div class="section-head"><div><span class="section-kicker">Body assessment</span><h2>ข้อมูลสุขภาพของคุณ</h2><p>ช่องที่มีเครื่องหมาย * จำเป็นต่อการคำนวณ</p></div></div>
+        <div class="health-layout">
+          <section class="surface health-form-card">
+            <div class="status-message" id="healthStatus" aria-live="polite"></div>
+            <form id="healthProfileForm">
+              <div class="health-form-grid">
+                <div class="ss-field"><label for="age">อายุ (ปี) *</label><input id="age" name="age" type="number" min="15" max="100" placeholder="เช่น 21" required></div>
+                <div class="ss-field"><label for="sex">เพศที่ใช้คำนวณ BMR *</label><select id="sex" name="sex" required><option value="">เลือก</option><option value="female">หญิง</option><option value="male">ชาย</option></select></div>
+                <div class="ss-field"><label for="height">ส่วนสูง (ซม.) *</label><input id="height" name="height" type="number" min="120" max="230" step="0.1" placeholder="เช่น 165" required></div>
+                <div class="ss-field"><label for="weight">น้ำหนัก (กก.) *</label><input id="weight" name="weight" type="number" min="30" max="300" step="0.1" placeholder="เช่น 58" required></div>
+                <div class="ss-field"><label for="bodyFat">เปอร์เซ็นต์ไขมัน (%)</label><input id="bodyFat" name="bodyFat" type="number" min="3" max="70" step="0.1" placeholder="ไม่ทราบเว้นว่างได้"></div>
+                <div class="ss-field"><label for="activity">ระดับกิจกรรม *</label><select id="activity" name="activity" required><option value="">เลือก</option><option value="1.2">น้อยมาก / ไม่ค่อยออกกำลัง</option><option value="1.375">เบา 1–3 วัน/สัปดาห์</option><option value="1.55">ปานกลาง 3–5 วัน/สัปดาห์</option><option value="1.725">หนัก 6–7 วัน/สัปดาห์</option><option value="1.9">หนักมาก / นักกีฬา</option></select></div>
+                <div class="ss-field"><label for="experienceLevel">ประสบการณ์ออกกำลังกาย *</label><select id="experienceLevel" name="experienceLevel" required><option value="">เลือก</option><option value="beginner">ผู้เริ่มต้น</option><option value="intermediate">ระดับกลาง</option><option value="advanced">มีประสบการณ์</option></select></div>
+                <div class="ss-field"><label for="limitations">ข้อจำกัดหรืออาการบาดเจ็บ</label><input id="limitations" name="limitations" type="text" placeholder="เช่น ปวดเข่า หรือ ไม่มี"></div>
+              </div>
+
+              <div class="ss-field" style="margin-top:18px"><label>เป้าหมายหลัก *</label><div class="goal-options"><label class="goal-option"><input type="radio" name="goal" value="weight-loss" required> ลดไขมัน</label><label class="goal-option"><input type="radio" name="goal" value="muscle-gain" required> เพิ่มกล้ามเนื้อ</label><label class="goal-option"><input type="radio" name="goal" value="general" required> ดูแลสุขภาพ</label><label class="goal-option"><input type="radio" name="goal" value="performance" required> เพิ่มสมรรถภาพ</label><label class="goal-option"><input type="radio" name="goal" value="rehabilitation" required> ฟื้นฟูร่างกาย</label></div></div>
+              <div class="ss-field" style="margin-top:15px"><label for="notes">รายละเอียดเพิ่มเติม</label><textarea id="notes" name="notes" placeholder="บอกสิ่งที่อยากพัฒนา เวลาที่สะดวก หรือสิ่งที่เทรนเนอร์ควรรู้"></textarea></div>
+              <button class="ss-btn primary wide" style="margin-top:18px" type="submit">คำนวณและบันทึกข้อมูล</button>
+            </form>
+          </section>
+
+          <aside class="surface health-result-card" aria-live="polite">
+            <div class="assessment-heading"><span>BODY ASSESSMENT</span><h2>สรุปผลการประเมิน</h2></div>
+            <div data-health-empty><h2>ผลลัพธ์จะแสดงที่นี่</h2><p>กรอกข้อมูลด้านซ้ายแล้วกดคำนวณ ระบบจะบันทึกผลไว้ในบัญชีตัวอย่างของคุณ</p></div>
+            <div data-health-results hidden>
+              <div class="metric-grid">
+                <div class="metric"><span>BMI</span><strong data-metric="bmi">-</strong><small data-metric="bmi-category">-</small></div>
+                <div class="metric"><span>Body Fat</span><strong data-metric="body-fat">-</strong><small>ข้อมูลที่กรอก</small></div>
+                <div class="metric"><span>BMR</span><strong data-metric="bmr">-</strong><small>kcal/วัน</small></div>
+                <div class="metric"><span>TDEE</span><strong data-metric="tdee">-</strong><small>kcal/วัน</small></div>
+                <div class="metric"><span>Daily Calories เป้าหมาย</span><strong data-metric="calories">-</strong><small>kcal/วัน</small></div>
+                <div class="metric"><span>โปรตีนแนะนำ</span><strong data-metric="protein">-</strong><small>กรัม/วัน</small></div>
+              </div>
+              <p class="health-note">ผลลัพธ์นี้เป็นค่าประมาณเพื่อการสาธิต ไม่ใช่การวินิจฉัยหรือคำแนะนำทางการแพทย์ ผู้มีโรคประจำตัวหรืออาการบาดเจ็บควรปรึกษาผู้เชี่ยวชาญ</p>
+            </div>
+            <button class="ss-btn success wide" id="findTrainerButton" style="margin-top:16px" type="button">ค้นหาเทรนเนอร์ที่เหมาะกับฉัน</button>
+          </aside>
+        </div>
+      </div>
+    </section>
+  </main>
+
+  <footer id="contact" class="site-footer">
+    <div class="container">
+      <div class="footer-grid">
+        <div class="footer-logo">
+          <a class="logo" href="index.html" aria-label="Sports Science Fitness Club">
+            <img class="logo-image" src="assets/logo-ss-fitness-clean.png" alt="Sports Science Fitness Club logo">
+          </a>
+        </div>
+
+        <div class="footer-col">
+          <h3>วิทยาศาสตร์การกีฬา นวัตกรรมและสุขภาพ</h3>
+          <p>มหาวิทยาลัยขอนแก่น วิทยาเขตหนองคาย</p>
+          <div class="contact-line"><span>112 หมู่ 7 บ้านหนองเดิ่น ต.หนองกอมเกาะ<br>อ.เมืองหนองคาย จ.หนองคาย 43000</span></div>
+          <div class="contact-line"><span>042-415600</span></div>
+          <div class="contact-line"><span>is.inbox@kku.ac.th</span></div>
+        </div>
+
+        <div class="footer-col">
+          <h3>ลิงก์ด่วน</h3>
+          <div class="quick-links">
+            <a href="fitness.html">สถานที่ฟิตเนส</a>
+            <a href="#package">แพ็กเกจ</a>
+            <a href="#service">บริการของเรา</a>
+            <a href="#contact">ติดต่อเรา</a>
+          </div>
+        </div>
+
+        <div class="footer-col">
+          <h3>ติดตามข่าวสาร</h3>
+          <p>รับข่าวสารและโปรโมชั่นพิเศษก่อนใคร</p>
+          <form class="newsletter">
+            <input type="email" placeholder="อีเมลของคุณ" aria-label="อีเมลของคุณ">
+            <button type="submit" aria-label="ส่งอีเมล">›</button>
+          </form>
+        </div>
+      </div>
+
+      <div class="footer-bottom">
+        <span>© 2026 Sports Science Fitness Club. Front-end Demo.</span>
+        <div class="socials" aria-label="Social links">
+          <a href="https://www.facebook.com/SportandExerciesScienceKKUNKC" target="_blank" rel="noopener" aria-label="Facebook">f</a>
+        </div>
+      </div>
+    </div>
+  </footer>
+  <script src="js/features.js"></script>
+  <script src="js/ui.js"></script>
+</body>
+</html>
