@@ -169,9 +169,17 @@
       auth.innerHTML = `<a class="ss-btn" href="dashboard.html">แดชบอร์ด</a><button class="ss-btn primary" type="button" data-feature-logout>ออกจากระบบ</button>`;
     }
     $$('[data-feature-logout]').forEach(button => button.addEventListener('click', () => {
-      localStorage.removeItem(KEYS.currentUser);
-      localStorage.removeItem('ssf_current_user');
-      window.location.href = 'login.html';
+      if (window.SSFAuth) window.SSFAuth.clearSession();
+      else {
+        localStorage.removeItem(KEYS.currentUser);
+        localStorage.removeItem('ssf_current_user');
+        if (typeof sessionStorage !== 'undefined') {
+          sessionStorage.removeItem(KEYS.currentUser);
+          sessionStorage.removeItem('ssf_current_user');
+        }
+      }
+      if (typeof window.location.replace === 'function') window.location.replace('login.html');
+      else window.location.href = 'login.html';
     }));
   }
 
