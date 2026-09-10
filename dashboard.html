@@ -800,9 +800,17 @@
       window.location.href = 'health-profile.html';
     });
     document.getElementById('logoutBtn').addEventListener('click', () => {
-      localStorage.removeItem('sportsScienceCurrentUser');
-      localStorage.removeItem('ssf_current_user');
-      window.location.href = 'login.html';
+      if (window.SSFAuth) window.SSFAuth.clearSession();
+      else {
+        localStorage.removeItem('sportsScienceCurrentUser');
+        localStorage.removeItem('ssf_current_user');
+        if (typeof sessionStorage !== 'undefined') {
+          sessionStorage.removeItem('sportsScienceCurrentUser');
+          sessionStorage.removeItem('ssf_current_user');
+        }
+      }
+      if (typeof window.location.replace === 'function') window.location.replace('login.html');
+      else window.location.href = 'login.html';
     });
 
     renderBookings();
