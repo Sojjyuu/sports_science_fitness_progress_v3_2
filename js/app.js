@@ -43,7 +43,19 @@
   function saveMembers(members) { saveJSON(STORAGE.members, members); }
   function getCurrentUser() { return parseJSON(STORAGE.currentUser, null); }
   function setCurrentUser(user) { saveJSON(STORAGE.currentUser, user); }
-  function logout() { localStorage.removeItem(legacyKeys.currentUser); localStorage.removeItem(STORAGE.currentUser); window.location.href = 'login.html'; }
+  function logout() {
+    if (window.SSFAuth) window.SSFAuth.clearSession();
+    else {
+      localStorage.removeItem(legacyKeys.currentUser);
+      localStorage.removeItem(STORAGE.currentUser);
+      if (typeof sessionStorage !== 'undefined') {
+        sessionStorage.removeItem(legacyKeys.currentUser);
+        sessionStorage.removeItem(STORAGE.currentUser);
+      }
+    }
+    if (typeof window.location.replace === 'function') window.location.replace('login.html');
+    else window.location.href = 'login.html';
+  }
 
   function migrateLegacyData() {
     const members = getMembers();
