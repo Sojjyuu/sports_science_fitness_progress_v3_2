@@ -26,7 +26,7 @@
   const featureHeader=actions.classList.contains('ss-actions');
   actions.innerHTML=user
    ? featureHeader
-    ? '<a class="ss-btn" href="dashboard.html">แดชบอร์ด</a><button class="ss-btn primary" type="button" data-ui-logout>ออกจากระบบ</button>'
+    ? '<a class="ss-btn" href="dashboard.html">บัญชีของฉัน</a><button class="ss-btn primary" type="button" data-ui-logout>ออกจากระบบ</button>'
     : '<a class="btn" href="dashboard.html">แดชบอร์ด</a><button class="btn btn-primary" type="button" data-ui-logout>ออกจากระบบ</button>'
    : featureHeader
     ? '<a class="ss-btn" href="login.html">เข้าสู่ระบบ</a><a class="ss-btn primary" href="register.html">สมัครสมาชิก</a>'
