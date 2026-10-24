@@ -111,7 +111,7 @@
   ];
 
   const FITNESS_PACKAGES = [
-    { id: '1m', label: 'เริ่มต้น', name: 'Fitness 1 เดือน', price: 300, unit: '/ เดือน', featured: false, features: ['เข้าใช้ฟิตเนสตามเวลาเปิดบริการ', 'ประเมินสมรรถภาพเบื้องต้น 1 ครั้ง', 'บันทึกการเข้าใช้ผ่าน Dashboard'] },
+    { id: '1m', label: 'เริ่มต้น', name: 'Fitness 1 เดือน', price: 300, unit: '/ เดือน', featured: false, features: ['เข้าใช้ฟิตเนสตามเวลาเปิดบริการ', 'ประเมินสมรรถภาพเบื้องต้น 1 ครั้ง', 'ดูประวัติการเข้าใช้จาก RFID'] },
     { id: '3m', label: 'ยอดนิยม', name: 'Fitness 3 เดือน', price: 750, unit: '/ 3 เดือน', featured: true, features: ['สิทธิ์ทั้งหมดจากแพ็กเกจ 1 เดือน', 'ติดตามผลรายเดือน', 'ประหยัดกว่ารายเดือน 150 บาท'] },
     { id: '6m', label: 'ต่อเนื่อง', name: 'Fitness 6 เดือน', price: 1400, unit: '/ 6 เดือน', featured: false, features: ['สิทธิ์ทั้งหมดจากแพ็กเกจ 3 เดือน', 'ประเมินสมรรถภาพซ้ำ 2 ครั้ง', 'เหมาะสำหรับแผนระยะกลาง'] },
     { id: '1y', label: 'คุ้มที่สุด', name: 'Fitness 1 ปี', price: 2500, unit: '/ ปี', featured: false, features: ['เข้าใช้ฟิตเนสตลอด 12 เดือน', 'ติดตามผลและประเมินสมรรถภาพ', 'ราคาต่อเดือนคุ้มที่สุด'] }
@@ -123,6 +123,7 @@
     { id: 'pt8', label: 'จริงจัง', name: 'Personal Training 8 ครั้ง', price: 2200, unit: '/ แพ็กเกจ', featured: false, features: ['ฝึกส่วนตัว 8 ครั้ง', 'ปรับโปรแกรมตามความก้าวหน้า', 'สรุปผลเมื่อจบแพ็กเกจ'] }
   ];
 
+  window.SSFCatalog = { trainers: TRAINERS, fitness: FITNESS_PACKAGES, trainer: TRAINER_PACKAGES };
   const $ = (selector, root = document) => root.querySelector(selector);
   const $$ = (selector, root = document) => [...root.querySelectorAll(selector)];
   const readJSON = (key, fallback) => {
@@ -439,7 +440,7 @@
       if (user && type === 'fitness') updateCurrentUser({ plan: pkg.id, planLabel: `${pkg.name} / ${formatBaht(pkg.price)}` });
       else if (user) updateCurrentUser({ trainerPackage: pkg.id, trainerPackageLabel: pkg.name, selectedTrainerId: selectedTrainer.id });
       showMessage(status, user
-        ? `เลือก “${pkg.name}”${selectedTrainer ? ` กับ ${selectedTrainer.name}` : ''} เรียบร้อยแล้ว ระบบบันทึกไว้ในบัญชีสมาชิกแล้ว`
+        ? `เลือก “${pkg.name}”${selectedTrainer ? ` กับ ${selectedTrainer.name}` : ''} ไว้แล้ว เป็นตัวเลือกสาธิต ยังไม่ใช่สิทธิ์ที่ชำระและยืนยันแล้ว`
         : `บันทึกตัวเลือก “${pkg.name}” ไว้แล้ว กรุณาเข้าสู่ระบบหรือสมัครสมาชิกเพื่อยืนยันแพ็กเกจ`, 'success');
       status.scrollIntoView({ behavior: 'smooth', block: 'center' });
     });
