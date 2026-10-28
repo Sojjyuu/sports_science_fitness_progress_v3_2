@@ -157,7 +157,7 @@ CREATE TABLE IF NOT EXISTS health_profiles (
 
 CREATE TABLE IF NOT EXISTS rfid_cards (
   id uuid PRIMARY KEY DEFAULT gen_random_uuid(),
-  member_id uuid NOT NULL UNIQUE REFERENCES accounts(id) ON DELETE CASCADE,
+  member_id uuid NOT NULL REFERENCES accounts(id) ON DELETE CASCADE,
   card_uid text NOT NULL UNIQUE,
   status text NOT NULL DEFAULT 'pending' CHECK (status IN ('pending', 'active', 'suspended')),
   issued_at date,
@@ -166,6 +166,14 @@ CREATE TABLE IF NOT EXISTS rfid_cards (
   created_at timestamptz NOT NULL DEFAULT now(),
   updated_at timestamptz NOT NULL DEFAULT now()
 );
+
+/* เดิม member_id เป็น UNIQUE ทำให้สมาชิกออกบัตรใหม่หลังบัตรหายไม่ได้
+   ตอนนี้เก็บประวัติบัตรได้หลายใบ แต่เปิดใช้งานได้ครั้งละใบเท่านั้น */
+ALTER TABLE rfid_cards DROP CONSTRAINT IF EXISTS rfid_cards_member_id_key;
+CREATE UNIQUE INDEX IF NOT EXISTS rfid_cards_one_open_key
+  ON rfid_cards (member_id)
+  WHERE status IN ('pending', 'active');
+CREATE INDEX IF NOT EXISTS rfid_cards_member_idx ON rfid_cards (member_id, created_at DESC);
 
 CREATE TABLE IF NOT EXISTS access_logs (
   id bigserial PRIMARY KEY,

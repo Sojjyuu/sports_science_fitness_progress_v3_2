@@ -98,7 +98,17 @@ router.patch('/appointments/:id', asyncRoute(async (req, res) => {
     'SELECT * FROM appointments WHERE id = $1 AND trainer_id = $2',
     [req.params.id, trainer.id]
   );
-  if (!ownRows[0]) throw new HttpError(404, 'ไม่พบนัดหมายของโค้ชคนนี้');
+  const current = ownRows[0];
+  if (!current) throw new HttpError(404, 'ไม่พบนัดหมายของโค้ชคนนี้');
+
+  /* โค้ชเปลี่ยนได้เฉพาะสถานะถัดไปที่สมเหตุสมผล ไม่เปิดนัดที่จบแล้วกลับมาใหม่ */
+  const allowedNext = {
+    requested: ['confirmed', 'cancelled'],
+    confirmed: ['completed', 'cancelled', 'no_show']
+  };
+  if (!(allowedNext[current.status] || []).includes(status)) {
+    throw new HttpError(409, `ไม่สามารถเปลี่ยนสถานะจาก ${current.status} เป็น ${status} ได้`);
+  }
 
   await db.query(
     `UPDATE appointments SET status = $2, cancel_reason = $3 WHERE id = $1`,

@@ -1,0 +1,17 @@
+# dependencies
+node_modules/
+server/node_modules/
+
+# local secrets / environment
+.env
+.env.*
+!.env.example
+server/.env
+server/.env.*
+!server/.env.example
+
+# logs and OS files
+*.log
+npm-debug.log*
+.DS_Store
+Thumbs.db

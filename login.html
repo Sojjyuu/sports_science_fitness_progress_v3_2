@@ -121,7 +121,14 @@
     .switch-link a { color: var(--blue-700); font-weight: 900; }
     .status-box { display: none; border-radius: 14px; padding: 13px 15px; font-size: 14px; font-weight: 700; line-height: 1.55; }
     .status-box.success { display: block; color: #085d2b; background: #eafff1; border: 1px solid #b9f0ca; }
+    .status-box.info { display: block; color: #21345f; background: #eef4ff; border: 1px solid #cfe0ff; }
     .status-box.error { display: block; color: #982525; background: #fff1f1; border: 1px solid #ffd1d1; }
+    .demo-label { display: block; color: #21345f; font-size: 14px; font-weight: 800; margin-bottom: 8px; }
+    .demo-row { display: flex; gap: 8px; align-items: stretch; }
+    .demo-row select { flex: 1; min-width: 0; border: 1px solid #d5deee; border-radius: 10px; padding: 10px 12px; font: inherit; background: #fff; }
+    .demo-fill { border: 1px solid #075bd8; border-radius: 10px; padding: 10px 14px; font: inherit; font-weight: 700; color: #075bd8; background: #eef4ff; cursor: pointer; white-space: nowrap; }
+    .demo-fill:hover { background: #dce8ff; }
+    .demo-note { margin: 8px 0 0; color: #5b6b8c; font-size: 13px; line-height: 1.5; }
 
     .plan-options { display: grid; grid-template-columns: repeat(4, 1fr); gap: 12px; margin: 5px 0 4px; }
     .plan-option { position: relative; display: grid; gap: 3px; padding: 14px 12px; border: 1px solid #cfdcf4; border-radius: 14px; cursor: pointer; transition: .22s ease; background: #fff; }
@@ -233,6 +240,7 @@
         <p>กรอกอีเมลและรหัสผ่านที่สมัครไว้ ระบบนี้เป็นหน้าเว็บตัวอย่างแบบ Front-end สำหรับนำไปต่อยอดกับฐานข้อมูลจริงได้</p>
         <form class="auth-form" id="loginForm">
           <div id="loginStatus" class="status-box" aria-live="polite"></div>
+          <div data-demo-accounts></div>
           <button class="google-login-button" type="button" data-google-login>
             <span class="google-mark" aria-hidden="true">G</span>
             เข้าสู่ระบบด้วย Google
@@ -337,26 +345,36 @@
   </script>
 
   <script>
-    document.getElementById('loginForm').addEventListener('submit', event => {
+    document.getElementById('loginForm').addEventListener('submit', async event => {
       event.preventDefault();
       const email = document.getElementById('loginEmail').value.trim().toLowerCase();
       const password = document.getElementById('loginPassword').value;
-      const member = JSON.parse(localStorage.getItem('sportsScienceMember') || 'null');
-      if (!member) {
-        showStatus('loginStatus', 'error', 'ยังไม่พบข้อมูลสมาชิกในเครื่องนี้ กรุณาสมัครสมาชิกก่อน');
+      const submit = event.currentTarget.querySelector('button[type="submit"]');
+
+      if (!window.SSFAPI) {
+        showStatus('loginStatus', 'error', 'ไม่พบโมดูลเชื่อมต่อ API กรุณาเปิดเว็บผ่าน http://localhost:3000');
         return;
       }
-      if (member.email === email && member.password === password) {
-        localStorage.setItem('sportsScienceCurrentUser', JSON.stringify({ ...member, loggedInAt: new Date().toISOString() }));
-        showStatus('loginStatus', 'success', 'เข้าสู่ระบบสำเร็จ ยินดีต้อนรับ ' + member.name + ' กำลังไปหน้าถัดไป...');
-        setTimeout(() => window.location.href = member.serviceType === 'trainer' && !member.trainerPackage ? 'trainers.html' : 'dashboard.html', 900);
-      } else {
-        showStatus('loginStatus', 'error', 'อีเมลหรือรหัสผ่านไม่ถูกต้อง');
+
+      submit.disabled = true;
+      showStatus('loginStatus', 'info', 'กำลังเข้าสู่ระบบ...');
+      try {
+        const user = await window.SSFAPI.login(email, password);
+        const target = window.SSFRoles?.dashboardFor(user)
+          || (user.role === 'admin' ? 'admin-dashboard.html' : user.role === 'coach' ? 'coach-dashboard.html' : 'dashboard.html');
+        showStatus('loginStatus', 'success', 'เข้าสู่ระบบสำเร็จ กำลังเปิดแดชบอร์ด...');
+        setTimeout(() => window.location.replace(target), 500);
+      } catch (error) {
+        showStatus('loginStatus', 'error', error.message || 'อีเมลหรือรหัสผ่านไม่ถูกต้อง');
+      } finally {
+        submit.disabled = false;
       }
     });
   </script>
+  <script src="js/api.js"></script>
   <script src="js/oauth-config.js"></script>
   <script src="js/features.js"></script>
+  <script src="js/auth-roles.js"></script>
   <script src="js/ui.js"></script>
 </body>
 </html>

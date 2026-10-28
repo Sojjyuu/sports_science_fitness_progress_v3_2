@@ -121,6 +121,7 @@
     .status-box { display: none; border-radius: 14px; padding: 13px 15px; font-size: 14px; font-weight: 700; line-height: 1.55; }
     .status-box.success { display: block; color: #085d2b; background: #eafff1; border: 1px solid #b9f0ca; }
     .status-box.error { display: block; color: #982525; background: #fff1f1; border: 1px solid #ffd1d1; }
+    .status-box.info { display: block; color: #21345f; background: #eef4ff; border: 1px solid #cfe0ff; }
 
     [hidden] { display: none !important; }
     .service-options { display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 12px; }
@@ -402,7 +403,7 @@
       '6m': '6 เดือน / 1,400 ฿',
       '1y': '1 ปี / 2,500 ฿'
     };
-    document.getElementById('registerForm').addEventListener('submit', event => {
+    document.getElementById('registerForm').addEventListener('submit', async event => {
       event.preventDefault();
       const password = document.getElementById('registerPassword').value;
       const confirm = document.getElementById('confirmPassword').value;
@@ -410,24 +411,38 @@
         showStatus('registerStatus', 'error', 'รหัสผ่านและยืนยันรหัสผ่านไม่ตรงกัน');
         return;
       }
+      if (!window.SSFAPI) {
+        showStatus('registerStatus', 'error', 'ไม่พบโมดูลเชื่อมต่อ API กรุณาเปิดเว็บผ่าน http://localhost:3000');
+        return;
+      }
+
       const serviceType = document.querySelector('[name="serviceType"]:checked').value;
       const selectedPlan = serviceType === 'fitness' ? document.querySelector('input[name="plan"]:checked').value : null;
-      const member = {
-        name: document.getElementById('fullName').value.trim(),
-        studentId: document.getElementById('studentId').value.trim(),
-        email: document.getElementById('registerEmail').value.trim().toLowerCase(),
-        phone: document.getElementById('phone').value.trim(),
-        serviceType,
-        plan: selectedPlan,
-        planLabel: selectedPlan ? planText[selectedPlan] : 'ยังไม่ได้เลือกแพ็กเกจฟิตเนส',
-        password: password,
-        createdAt: new Date().toISOString()
-      };
-      localStorage.setItem('sportsScienceMember', JSON.stringify(member));
-      showStatus('registerStatus', 'success', serviceType === 'trainer' ? 'สมัครสมาชิกสำเร็จ เข้าสู่ระบบเพื่อเลือกโค้ชและแพ็กเกจฝึกส่วนตัว' : 'สมัครสมาชิกสำเร็จ เลือกแพ็กเกจ ' + member.planLabel + ' แล้ว กำลังไปหน้าเข้าสู่ระบบ...');
-      setTimeout(() => window.location.href = 'login.html', 1200);
+      const submit = event.currentTarget.querySelector('button[type="submit"]');
+      submit.disabled = true;
+      showStatus('registerStatus', 'info', 'กำลังสร้างบัญชี...');
+      try {
+        await window.SSFAPI.register({
+          fullName: document.getElementById('fullName').value.trim(),
+          studentId: document.getElementById('studentId').value.trim(),
+          email: document.getElementById('registerEmail').value.trim().toLowerCase(),
+          phone: document.getElementById('phone').value.trim(),
+          password,
+          serviceType,
+          plan: selectedPlan
+        });
+        showStatus('registerStatus', 'success', serviceType === 'trainer'
+          ? 'สมัครสมาชิกสำเร็จ เข้าสู่ระบบเพื่อเลือกโค้ชและแพ็กเกจฝึกส่วนตัว'
+          : 'สมัครสมาชิกสำเร็จ เลือกแพ็กเกจ ' + (planText[selectedPlan] || '') + ' แล้ว กำลังไปหน้าเข้าสู่ระบบ...');
+        setTimeout(() => window.location.replace('login.html'), 1200);
+      } catch (error) {
+        showStatus('registerStatus', 'error', error.message || 'สมัครสมาชิกไม่สำเร็จ กรุณาลองใหม่');
+      } finally {
+        submit.disabled = false;
+      }
     });
   </script>
+  <script src="js/api.js"></script>
   <script src="js/ui.js"></script>
 </body>
 </html>

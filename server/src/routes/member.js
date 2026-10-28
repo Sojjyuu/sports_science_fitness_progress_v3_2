@@ -16,6 +16,10 @@ const APPOINTMENT_SELECT = `
   JOIN trainers t ON t.id = ap.trainer_id
   JOIN accounts m ON m.id = ap.member_id`;
 
+const ACTIVITY_LEVELS = [1.2, 1.375, 1.55, 1.725, 1.9];
+const GOALS = ['weight-loss', 'muscle-gain', 'general', 'performance', 'rehabilitation'];
+const EXPERIENCE_LEVELS = ['beginner', 'intermediate', 'advanced'];
+
 async function memberPayload(memberId) {
   const [accountResult, entitlements] = await Promise.all([
     db.query(
@@ -283,6 +287,9 @@ router.put('/health', asyncRoute(async (req, res) => {
   if (!(height >= 120 && height <= 230)) throw new HttpError(400, 'ส่วนสูงควรอยู่ระหว่าง 120–230 ซม.');
   if (!(weight >= 30 && weight <= 300)) throw new HttpError(400, 'น้ำหนักควรอยู่ระหว่าง 30–300 กก.');
   if (bodyFat !== null && !(bodyFat >= 3 && bodyFat <= 70)) throw new HttpError(400, 'เปอร์เซ็นต์ไขมันควรอยู่ระหว่าง 3–70%');
+  if (!ACTIVITY_LEVELS.includes(activity)) throw new HttpError(400, 'ระดับกิจกรรมไม่ถูกต้อง');
+  if (!GOALS.includes(goal)) throw new HttpError(400, 'เป้าหมายไม่ถูกต้อง');
+  if (!EXPERIENCE_LEVELS.includes(experienceLevel)) throw new HttpError(400, 'ระดับประสบการณ์ไม่ถูกต้อง');
 
   const results = calculateHealth({ age, height, weight, activity, sex, goal, bodyFat });
 
@@ -305,7 +312,12 @@ router.put('/health', asyncRoute(async (req, res) => {
 
 router.get('/access', asyncRoute(async (req, res) => {
   const [cardResult, logResult] = await Promise.all([
-    db.query('SELECT * FROM rfid_cards WHERE member_id = $1', [req.user.id]),
+    db.query(
+      `SELECT * FROM rfid_cards WHERE member_id = $1
+       ORDER BY CASE status WHEN 'active' THEN 0 WHEN 'pending' THEN 1 ELSE 2 END, created_at DESC
+       LIMIT 1`,
+      [req.user.id]
+    ),
     db.query(
       `SELECT id, entered_at, direction, source, allowed FROM access_logs
        WHERE member_id = $1 ORDER BY entered_at DESC LIMIT 20`,

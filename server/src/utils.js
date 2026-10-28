@@ -20,10 +20,13 @@ const nowTime = () => {
   return `${String(now.getHours()).padStart(2, '0')}:${String(now.getMinutes()).padStart(2, '0')}`;
 };
 
+/* บวกเดือนโดยไม่ล้นไปเดือนถัดไป เช่น 2026-01-31 + 1 เดือน = 2026-02-28 */
 const addMonths = (dateString, months) => {
-  const date = new Date(`${dateString}T00:00:00`);
-  date.setMonth(date.getMonth() + months);
-  return `${date.getFullYear()}-${String(date.getMonth() + 1).padStart(2, '0')}-${String(date.getDate()).padStart(2, '0')}`;
+  const [year, month, day] = String(dateString).split('-').map(Number);
+  const target = new Date(year, month - 1 + months, 1);
+  const lastDay = new Date(target.getFullYear(), target.getMonth() + 1, 0).getDate();
+  target.setDate(Math.min(day, lastDay));
+  return `${target.getFullYear()}-${String(target.getMonth() + 1).padStart(2, '0')}-${String(target.getDate()).padStart(2, '0')}`;
 };
 
 const isDateString = value => /^\d{4}-\d{2}-\d{2}$/.test(String(value || '')) && !Number.isNaN(Date.parse(`${value}T00:00:00`));

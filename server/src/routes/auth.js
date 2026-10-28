@@ -17,6 +17,12 @@ const WINDOW_MS = 15 * 60 * 1000;
 const MAX_ATTEMPTS = 20;
 function hitLoginLimit(ip) {
   const now = Date.now();
+  /* เก็บกวาดรายการที่หมดเวลาเป็นครั้งคราว กันหน่วยความจำโตไม่จำกัด */
+  if (attempts.size > 500) {
+    for (const [key, entry] of attempts) {
+      if (now > entry.resetAt) attempts.delete(key);
+    }
+  }
   const entry = attempts.get(ip) || { count: 0, resetAt: now + WINDOW_MS };
   if (now > entry.resetAt) {
     entry.count = 0;

@@ -2,7 +2,7 @@ const express = require('express');
 const db = require('../db');
 const { requireAuth, requireRole } = require('../auth');
 const {
-  HttpError, asyncRoute, text, todayISO, addMonths,
+  HttpError, asyncRoute, text, todayISO, addMonths, isDateString,
   mapTrainer, mapAppointment, mapEntitlement, isEntitlementActive
 } = require('../utils');
 
@@ -219,9 +219,28 @@ router.patch('/entitlements/:id', asyncRoute(async (req, res) => {
   const current = currentRows[0];
   if (!current) throw new HttpError(404, 'ไม่พบสิทธิ์ที่ต้องการแก้ไข');
 
+  if (req.body.startDate !== undefined && req.body.startDate !== null && req.body.startDate !== '' && !isDateString(req.body.startDate)) {
+    throw new HttpError(400, 'รูปแบบวันเริ่มสิทธิ์ไม่ถูกต้อง');
+  }
+  if (req.body.expireDate !== undefined && req.body.expireDate !== null && req.body.expireDate !== '' && !isDateString(req.body.expireDate)) {
+    throw new HttpError(400, 'รูปแบบวันหมดอายุไม่ถูกต้อง');
+  }
+  if (req.body.sessionsUsed !== undefined) {
+    const used = Number(req.body.sessionsUsed);
+    if (!Number.isInteger(used) || used < 0) throw new HttpError(400, 'จำนวนครั้งที่ใช้ต้องเป็นจำนวนเต็มตั้งแต่ 0 ขึ้นไป');
+  }
+  if (req.body.sessionsTotal !== undefined) {
+    const total = Number(req.body.sessionsTotal);
+    if (!Number.isInteger(total) || total < 0) throw new HttpError(400, 'จำนวนครั้งทั้งหมดต้องเป็นจำนวนเต็มตั้งแต่ 0 ขึ้นไป');
+  }
+
   let startDate = req.body.startDate ? text(req.body.startDate) : current.start_date;
   let expireDate = req.body.expireDate ? text(req.body.expireDate) : current.expire_date;
   let sessionsTotal = req.body.sessionsTotal !== undefined ? Number(req.body.sessionsTotal) : current.sessions_total;
+
+  if (startDate && expireDate && expireDate < startDate) {
+    throw new HttpError(400, 'วันหมดอายุต้องไม่ก่อนวันเริ่มสิทธิ์');
+  }
 
   if (status === 'confirmed' && !expireDate && current.kind === 'fitness') {
     const pkg = await db.query('SELECT months FROM fitness_packages WHERE id = $1', [current.package_id]);
@@ -280,6 +299,15 @@ router.post('/rfid-cards', asyncRoute(async (req, res) => {
   const memberId = text(req.body.memberId);
   const cardUid = text(req.body.cardUid);
   if (!memberId || !cardUid) throw new HttpError(400, 'กรุณาเลือกลูกค้าและกรอกหมายเลขบัตร');
+
+  const openCards = await db.query(
+    `SELECT id FROM rfid_cards WHERE member_id = $1 AND status IN ('pending', 'active')`,
+    [memberId]
+  );
+  if (openCards.rowCount) {
+    throw new HttpError(409, 'สมาชิกคนนี้มีบัตรที่ยังเปิดใช้งานอยู่ กรุณาระงับบัตรเดิมก่อนออกบัตรใหม่');
+  }
+
   try {
     const { rows } = await db.query(
       `INSERT INTO rfid_cards (member_id, card_uid, status, issued_at)
@@ -288,7 +316,7 @@ router.post('/rfid-cards', asyncRoute(async (req, res) => {
     );
     res.status(201).json({ card: rows[0] });
   } catch (error) {
-    if (error.code === '23505') throw new HttpError(409, 'บัตรนี้หรือสมาชิกคนนี้มีบัตรอยู่แล้ว');
+    if (error.code === '23505') throw new HttpError(409, 'หมายเลขบัตรนี้ถูกใช้แล้ว หรือสมาชิกมีบัตรที่ยังเปิดใช้งานอยู่');
     if (error.code === '23503') throw new HttpError(404, 'ไม่พบสมาชิก');
     throw error;
   }
@@ -297,13 +325,32 @@ router.post('/rfid-cards', asyncRoute(async (req, res) => {
 router.patch('/rfid-cards/:id', asyncRoute(async (req, res) => {
   const status = String(req.body.status || '');
   if (!['pending', 'active', 'suspended'].includes(status)) throw new HttpError(400, 'สถานะบัตรไม่ถูกต้อง');
+
+  const current = await db.query('SELECT * FROM rfid_cards WHERE id = $1', [req.params.id]);
+  if (!current.rows[0]) throw new HttpError(404, 'ไม่พบบัตร');
+
+  if (status !== 'suspended') {
+    const otherOpen = await db.query(
+      `SELECT id FROM rfid_cards
+       WHERE member_id = $1 AND id <> $2 AND status IN ('pending', 'active')`,
+      [current.rows[0].member_id, req.params.id]
+    );
+    if (otherOpen.rowCount) {
+      throw new HttpError(409, 'สมาชิกคนนี้มีบัตรอื่นที่ยังเปิดใช้งานอยู่ กรุณาระงับบัตรนั้นก่อน');
+    }
+  }
+
   const suspendedAt = status === 'suspended' ? todayISO() : null;
-  const { rows } = await db.query(
-    `UPDATE rfid_cards SET status = $2, suspended_at = $3 WHERE id = $1 RETURNING *`,
-    [req.params.id, status, suspendedAt]
-  );
-  if (!rows[0]) throw new HttpError(404, 'ไม่พบบัตร');
-  res.json({ card: rows[0] });
+  try {
+    const { rows } = await db.query(
+      `UPDATE rfid_cards SET status = $2, suspended_at = $3 WHERE id = $1 RETURNING *`,
+      [req.params.id, status, suspendedAt]
+    );
+    res.json({ card: rows[0] });
+  } catch (error) {
+    if (error.code === '23505') throw new HttpError(409, 'สมาชิกคนนี้มีบัตรที่ยังเปิดใช้งานอยู่');
+    throw error;
+  }
 }));
 
 router.get('/staff', asyncRoute(async (req, res) => {

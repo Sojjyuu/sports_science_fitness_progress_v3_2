@@ -21,12 +21,26 @@ app.use((req, res, next) => {
   next();
 });
 
-/* Dev convenience: เปิดให้เรียก API จากคนละพอร์ตได้ (production ควรจำกัด origin) */
+/* Dev convenience: อนุญาตเฉพาะ origin บนเครื่องตัวเองเท่านั้น
+   (production ควรตั้ง allowlist ของโดเมนจริง หรือเสิร์ฟ frontend จาก origin เดียวกัน) */
+const DEV_ORIGIN = /^https?:\/\/(localhost|127\.0\.0\.1)(:\d+)?$/;
 app.use((req, res, next) => {
-  res.setHeader('Access-Control-Allow-Origin', req.headers.origin || '*');
-  res.setHeader('Access-Control-Allow-Headers', 'Content-Type, Authorization');
-  res.setHeader('Access-Control-Allow-Methods', 'GET, POST, PATCH, PUT, DELETE, OPTIONS');
+  const origin = req.headers.origin;
+  res.setHeader('Vary', 'Origin');
+  if (origin && DEV_ORIGIN.test(origin)) {
+    res.setHeader('Access-Control-Allow-Origin', origin);
+    res.setHeader('Access-Control-Allow-Headers', 'Content-Type, Authorization');
+    res.setHeader('Access-Control-Allow-Methods', 'GET, POST, PATCH, PUT, DELETE, OPTIONS');
+  }
   if (req.method === 'OPTIONS') return res.sendStatus(204);
+  next();
+});
+
+/* ห้ามเสิร์ฟไฟล์ Backend/ซอร์สโค้ดผ่าน static */
+app.use((req, res, next) => {
+  if (/^\/(server|node_modules|\.git)(\/|$)/i.test(req.path)) {
+    return res.status(404).json({ error: { message: 'ไม่พบไฟล์ที่ร้องขอ' } });
+  }
   next();
 });
 
@@ -50,7 +64,7 @@ app.use('/api', (req, res) => {
 });
 
 /* เสิร์ฟหน้าเว็บเดิมจาก root ของโปรเจกต์ (same origin กับ API) */
-app.use(express.static(ROOT, { extensions: ['html'] }));
+app.use(express.static(ROOT, { extensions: ['html'], dotfiles: 'deny' }));
 
 app.use((req, res) => {
   res.status(404).sendFile(path.join(ROOT, 'index.html'));
