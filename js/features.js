@@ -190,28 +190,24 @@
     status.textContent = message;
   }
 
-  function completeGoogleLogin(profile, demo = false) {
-    const googleUser = {
-      name: profile.name || 'สมาชิก Google',
-      fullName: profile.name || 'สมาชิก Google',
-      studentId: demo ? 'GOOGLE-DEMO' : `GOOGLE-${String(profile.sub || '').slice(-6).toUpperCase()}`,
-      email: profile.email || 'google.demo@sportscience.local',
-      phone: '-',
-      plan: '3m',
-      planLabel: '3 เดือน / 750 ฿',
-      picture: profile.picture || '',
-      provider: 'google',
-      createdAt: new Date().toISOString()
-    };
-    writeJSON(KEYS.member, googleUser);
-    writeJSON(KEYS.currentUser, { ...googleUser, loggedInAt: new Date().toISOString() });
-    return googleUser;
+  function resetGoogleButton(button) {
+    button.disabled = false;
+    button.removeAttribute('aria-busy');
+    button.innerHTML = '<span class="google-mark">G</span>เข้าสู่ระบบด้วย Google';
   }
 
-  function decodeGoogleCredential(credential) {
-    const payload = credential.split('.')[1].replace(/-/g, '+').replace(/_/g, '/');
-    const decoded = decodeURIComponent(atob(payload).split('').map(character => `%${(`00${character.charCodeAt(0).toString(16)}`).slice(-2)}`).join(''));
-    return JSON.parse(decoded);
+  /* แลกข้อมูลยืนยันจาก Google กับ Backend เพื่อขอ JWT จริง
+     (ถ้าเก็บแค่ข้อมูลใน localStorage หน้าแดชบอร์ดจะไม่มี token และเด้งกลับหน้า login) */
+  async function finishGoogleLogin(sessionPromise, status, button) {
+    try {
+      if (!window.SSFAPI) throw new Error('ไม่พบโมดูลเชื่อมต่อ API กรุณาโหลด js/api.js');
+      await sessionPromise;
+      setGoogleStatus(status, 'success', 'เข้าสู่ระบบด้วย Google สำเร็จ กำลังไปกรอกข้อมูลสุขภาพ...');
+      window.setTimeout(() => { window.location.href = 'health-profile.html?welcome=google'; }, 500);
+    } catch (error) {
+      resetGoogleButton(button);
+      setGoogleStatus(status, 'error', error?.message || 'เข้าสู่ระบบด้วย Google ไม่สำเร็จ กรุณาลองใหม่');
+    }
   }
 
   function initGoogleLogin() {
@@ -223,11 +219,7 @@
 
       if (!clientId) {
         button.innerHTML = '<span class="google-mark">G</span>กำลังเชื่อมต่อบัญชีตัวอย่าง...';
-        window.setTimeout(() => {
-          completeGoogleLogin({ name: 'สมาชิก Google Demo', email: 'google.demo@sportscience.local' }, true);
-          setGoogleStatus(status, 'success', 'เข้าสู่ระบบด้วย Google (โหมดสาธิต) สำเร็จ กำลังไปกรอกข้อมูลสุขภาพ...');
-          window.setTimeout(() => { window.location.href = 'health-profile.html?welcome=google'; }, 650);
-        }, 650);
+        finishGoogleLogin(window.SSFAPI ? window.SSFAPI.googleDemoLogin() : Promise.reject(new Error('ไม่พบโมดูลเชื่อมต่อ API')), status, button);
         return;
       }
 
@@ -236,21 +228,12 @@
         window.google.accounts.id.initialize({
           client_id: clientId,
           callback: response => {
-            try {
-              completeGoogleLogin(decodeGoogleCredential(response.credential));
-              setGoogleStatus(status, 'success', 'เข้าสู่ระบบด้วย Google สำเร็จ กำลังไปกรอกข้อมูลสุขภาพ...');
-              window.setTimeout(() => { window.location.href = 'health-profile.html?welcome=google'; }, 500);
-            } catch {
-              button.disabled = false;
-              setGoogleStatus(status, 'error', 'ไม่สามารถอ่านข้อมูลบัญชี Google ได้ กรุณาลองใหม่');
-            }
+            finishGoogleLogin(window.SSFAPI.googleLogin(response.credential), status, button);
           }
         });
         window.google.accounts.id.prompt(notification => {
           if (notification.isNotDisplayed() || notification.isSkippedMoment()) {
-            button.disabled = false;
-            button.removeAttribute('aria-busy');
-            button.innerHTML = '<span class="google-mark">G</span>เข้าสู่ระบบด้วย Google';
+            resetGoogleButton(button);
             setGoogleStatus(status, 'error', 'Google OAuth ไม่สามารถเปิดได้ กรุณาตรวจสอบ Client ID และ Authorized JavaScript Origin');
           }
         });
@@ -263,7 +246,7 @@
         script.defer = true;
         script.onload = startOAuth;
         script.onerror = () => {
-          button.disabled = false;
+          resetGoogleButton(button);
           setGoogleStatus(status, 'error', 'โหลด Google Identity Services ไม่สำเร็จ กรุณาตรวจสอบอินเทอร์เน็ต');
         };
         document.head.appendChild(script);
@@ -439,6 +422,22 @@
       const user = getCurrentUser();
       if (user && type === 'fitness') updateCurrentUser({ plan: pkg.id, planLabel: `${pkg.name} / ${formatBaht(pkg.price)}` });
       else if (user) updateCurrentUser({ trainerPackage: pkg.id, trainerPackageLabel: pkg.name, selectedTrainerId: selectedTrainer.id });
+
+      if (user && window.SSFAPI?.getToken()) {
+        showMessage(status, 'กำลังบันทึกตัวเลือกไปยังฐานข้อมูล...', 'info');
+        window.SSFAPI.updatePreferences(type === 'fitness'
+          ? { fitnessPackageId: pkg.id }
+          : { trainerPackageId: pkg.id, selectedTrainerId: selectedTrainer.id }
+        ).then(data => {
+          window.SSFAPI.cacheUser(data.user);
+          showMessage(status, `บันทึก “${pkg.name}”${selectedTrainer ? ` กับ ${selectedTrainer.name}` : ''} แล้ว — สิทธิ์จะใช้งานได้หลังเจ้าหน้าที่ตรวจสอบ`, 'success');
+          status.scrollIntoView({ behavior: 'smooth', block: 'center' });
+        }).catch(error => {
+          showMessage(status, error.message || 'บันทึกตัวเลือกไม่สำเร็จ', 'error');
+        });
+        return;
+      }
+
       showMessage(status, user
         ? `เลือก “${pkg.name}”${selectedTrainer ? ` กับ ${selectedTrainer.name}` : ''} ไว้แล้ว เป็นตัวเลือกสาธิต ยังไม่ใช่สิทธิ์ที่ชำระและยืนยันแล้ว`
         : `บันทึกตัวเลือก “${pkg.name}” ไว้แล้ว กรุณาเข้าสู่ระบบหรือสมัครสมาชิกเพื่อยืนยันแพ็กเกจ`, 'success');
@@ -500,19 +499,33 @@
     const stored = getProfile();
     $('[data-health-user-name]').textContent = user?.name || user?.fullName || 'สมาชิก';
     if (new URLSearchParams(window.location.search).get('welcome') === 'google') showMessage(status, 'เข้าสู่ระบบสำเร็จ กรุณากรอกข้อมูลสุขภาพเพื่อให้ระบบแนะนำเทรนเนอร์ได้แม่นยำขึ้น', 'info');
-    if (stored) {
-      Object.entries(stored).forEach(([key, value]) => {
+    const applyProfile = profile => {
+      if (!profile) return;
+      Object.entries(profile).forEach(([key, value]) => {
         const input = form.elements[key];
-        if (!input || key === 'results') return;
+        if (!input || key === 'results' || key === 'updatedAt') return;
         if (input instanceof RadioNodeList) {
           const radio = form.querySelector(`[name="${key}"][value="${value}"]`);
           if (radio) radio.checked = true;
         } else input.value = value ?? '';
       });
-      renderHealthResult(stored.results);
+      if (profile.results) renderHealthResult(profile.results);
+    };
+
+    applyProfile(stored);
+
+    /* ถ้าล็อกอินอยู่ ให้ดึงข้อมูลสุขภาพล่าสุดจากฐานข้อมูลมาเติมฟอร์ม */
+    if (user && window.SSFAPI?.getToken()) {
+      window.SSFAPI.getHealth().then(({ profile }) => {
+        if (!profile) return;
+        const profiles = readJSON(KEYS.healthProfiles, {});
+        profiles[profile.email || user.email] = profile;
+        writeJSON(KEYS.healthProfiles, profiles);
+        applyProfile(profile);
+      }).catch(() => { /* ใช้ข้อมูลแคชถ้าดึงไม่สำเร็จ */ });
     }
 
-    form.addEventListener('submit', event => {
+    form.addEventListener('submit', async event => {
       event.preventDefault();
       const data = Object.fromEntries(new FormData(form).entries());
       const age = Number(data.age), height = Number(data.height), weight = Number(data.weight);
@@ -524,6 +537,26 @@
         showMessage(status, 'เปอร์เซ็นต์ไขมันควรอยู่ระหว่าง 3–70%', 'error');
         return;
       }
+
+      const submitButton = form.querySelector('button[type="submit"]');
+      if (user && window.SSFAPI?.getToken()) {
+        if (submitButton) submitButton.disabled = true;
+        try {
+          const { profile } = await window.SSFAPI.saveHealth(data);
+          const profiles = readJSON(KEYS.healthProfiles, {});
+          profiles[user.email] = profile;
+          writeJSON(KEYS.healthProfiles, profiles);
+          updateCurrentUser({ healthProfileCompleted: true });
+          renderHealthResult(profile.results);
+          showMessage(status, 'บันทึกข้อมูลสุขภาพลงฐานข้อมูลและคำนวณผลแล้ว ระบบพร้อมแนะนำเทรนเนอร์ให้คุณ', 'success');
+        } catch (error) {
+          showMessage(status, error.message || 'บันทึกข้อมูลสุขภาพไม่สำเร็จ', 'error');
+        } finally {
+          if (submitButton) submitButton.disabled = false;
+        }
+        return;
+      }
+
       const results = calculateHealth(data);
       const profile = { ...data, age, height, weight, bodyFat: data.bodyFat ? Number(data.bodyFat) : '', results, updatedAt: new Date().toISOString() };
       const profiles = readJSON(KEYS.healthProfiles, {});

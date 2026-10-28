@@ -13,32 +13,53 @@
  };
 
  const clearSession=()=>{
+  if(window.SSFAPI){window.SSFAPI.clearSession();return;}
+  localStorage.removeItem('ssf_token');
   AUTH_KEYS.forEach(key=>{
    localStorage.removeItem(key);
    if(typeof sessionStorage!=='undefined') sessionStorage.removeItem(key);
   });
  };
 
+ const roleOf=user=>user?.role==='admin'||user?.role==='coach'?user.role:'member';
+ const roleLabel={admin:'ผู้ดูแลระบบ',coach:'โค้ช',member:'สมาชิก'};
+ const dashboardFor=user=>roleOf(user)==='admin'?'admin-dashboard.html':roleOf(user)==='coach'?'coach-dashboard.html':'dashboard.html';
+ const dashboardLabel=user=>roleOf(user)==='admin'?'แดชบอร์ดผู้ดูแล':roleOf(user)==='coach'?'แดชบอร์ดโค้ช':'แดชบอร์ด';
+ const MEMBER_PAGES=['dashboard.html','membership.html','appointments.html','access.html','assessment.html','profile.html'];
+ const STAFF_PAGES={'admin-dashboard.html':'admin','coach-dashboard.html':'coach'};
+ const go=url=>{if(typeof location.replace==='function') location.replace(url); else location.href=url;};
+
  const renderAuth=()=>{
   const actions=document.querySelector('.ui-auth');
   if(!actions) return;
   const user=readCurrentUser();
   const featureHeader=actions.classList.contains('ss-actions');
-  actions.innerHTML=user
-   ? featureHeader
-    ? '<a class="ss-btn" href="dashboard.html">บัญชีของฉัน</a><button class="ss-btn primary" type="button" data-ui-logout>ออกจากระบบ</button>'
-    : '<a class="btn" href="dashboard.html">แดชบอร์ด</a><button class="btn btn-primary" type="button" data-ui-logout>ออกจากระบบ</button>'
-   : featureHeader
+  if(!user){
+   actions.innerHTML=featureHeader
     ? '<a class="ss-btn" href="login.html">เข้าสู่ระบบ</a><a class="ss-btn primary" href="register.html">สมัครสมาชิก</a>'
     : '<a class="btn" href="login.html">เข้าสู่ระบบ</a><a class="btn btn-primary" href="register.html">สมัครสมาชิก</a>';
+   return;
+  }
+  const role=roleOf(user);
+  const roleTag=`<span class="ui-role">${roleLabel[role]}</span>`;
+  actions.innerHTML=featureHeader
+   ? roleTag+`<a class="ss-btn" href="${dashboardFor(user)}">${dashboardLabel(user)}</a><button class="ss-btn primary" type="button" data-ui-logout>ออกจากระบบ</button>`
+   : roleTag+`<a class="btn" href="${dashboardFor(user)}">${dashboardLabel(user)}</a><button class="btn btn-primary" type="button" data-ui-logout>ออกจากระบบ</button>`;
  };
 
  const enforceProtectedPage=()=>{
-  const page=location.pathname.split('/').pop();
-  if(page==='dashboard.html' && !readCurrentUser()){
-   if(typeof location.replace==='function') location.replace('login.html');
-   else location.href='login.html';
+  const page=location.pathname.split('/').pop()||'index.html';
+  const user=readCurrentUser();
+  const hasToken=!!localStorage.getItem('ssf_token');
+  const staffRole=STAFF_PAGES[page];
+  const memberPage=MEMBER_PAGES.includes(page);
+  if(!user||!hasToken){
+   if(staffRole||memberPage) go('login.html');
+   return;
   }
+  const role=roleOf(user);
+  if(staffRole&&staffRole!==role) go(dashboardFor(user));
+  else if(memberPage&&role!=='member') go(dashboardFor(user));
  };
 
  window.SSFAuth={getCurrentUser:readCurrentUser,clearSession,renderAuth};
