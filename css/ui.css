@@ -50,12 +50,11 @@ body .goal-option,body .plan-option { font-size:14px; font-weight:700; border-ra
 .hamburger,.ss-menu { display:none; }
 .site-footer { margin-top:64px; padding:48px 0 22px; background:#06275e; color:#fff; }
 .site-footer a,.feature-page .site-footer a { color:#fff; }
-.footer-grid { display:grid; grid-template-columns:1fr 1.6fr 1fr 1.2fr; gap:28px; }
+.footer-grid { display:grid; grid-template-columns:1fr 1.6fr 1.2fr; gap:28px; }
 .footer-logo .logo-image { height:78px; max-width:180px; width:auto; object-fit:contain; }
 .footer-col h3 { font-size:16px; margin:0 0 14px; color:#fff; }
-.footer-col p,.contact-line,.quick-links a { font-size:14px; color:#dce7f7; }
+.footer-col p,.contact-line { font-size:14px; color:#dce7f7; }
 .contact-line { display:flex; gap:10px; margin:10px 0; }
-.quick-links { display:grid; gap:8px; }
 .newsletter { display:flex; gap:8px; }
 .site-footer .newsletter input { width:100%; min-width:0; padding:10px; }
 .newsletter button { min-width:44px; border:0; border-radius:12px; background:#0b63ff; color:#fff; font-size:24px; cursor:pointer; }

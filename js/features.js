@@ -16,6 +16,7 @@
       id: 'coach-narin',
       name: 'โค้ชนรินทร์ วัฒนชัย',
       initials: 'NR',
+      photo: 'assets/trainers/coach-narin.jpg',
       gender: 'male',
       role: 'Strength & Conditioning Coach',
       experience: 8,
@@ -26,12 +27,14 @@
       bio: 'เชี่ยวชาญการสร้างพื้นฐานความแข็งแรงและเพิ่มมวลกล้ามเนื้ออย่างเป็นระบบ เหมาะทั้งผู้เริ่มต้นและผู้ที่ต้องการยกระดับสมรรถภาพ',
       certifications: ['Certified Personal Trainer (CPT)', 'Strength & Conditioning Fundamentals', 'ปฐมพยาบาลและ CPR'],
       schedule: ['จ. 16:00–20:00', 'อ. 16:00–20:00', 'พฤ. 16:00–20:00', 'ส. 09:00–15:00'],
-      color: 'linear-gradient(135deg, #075bd8, #05265c)'
+      color: 'linear-gradient(135deg, #075bd8, #05265c)',
+      soft: 'linear-gradient(180deg, #f2f7ff, #dbe7fa)'
     },
     {
       id: 'coach-pim',
       name: 'โค้ชพิมพ์ชนก ศรีสุข',
       initials: 'PM',
+      photo: 'assets/trainers/coach-pim.jpg',
       gender: 'female',
       role: 'Weight Management Coach',
       experience: 6,
@@ -42,12 +45,14 @@
       bio: 'ดูแลโปรแกรมลดไขมันควบคู่การปรับพฤติกรรม เน้นแผนที่ทำตามได้จริงและติดตามผลอย่างสม่ำเสมอโดยไม่หักโหม',
       certifications: ['Weight Management Specialist', 'Nutrition for Exercise', 'ปฐมพยาบาลและ CPR'],
       schedule: ['จ. 09:00–15:00', 'พ. 09:00–18:00', 'ศ. 09:00–18:00', 'ส. 10:00–16:00'],
-      color: 'linear-gradient(135deg, #12a6c9, #0750a4)'
+      color: 'linear-gradient(135deg, #12a6c9, #0750a4)',
+      soft: 'linear-gradient(180deg, #eefaff, #d8eefb)'
     },
     {
       id: 'coach-ton',
       name: 'โค้ชธนกฤต ภูผา',
       initials: 'TN',
+      photo: 'assets/trainers/coach-ton.jpg',
       gender: 'male',
       role: 'Athletic Performance Coach',
       experience: 10,
@@ -58,12 +63,14 @@
       bio: 'ออกแบบโปรแกรมพัฒนาความเร็ว พลัง และความคล่องตัวสำหรับนักกีฬา รวมถึงผู้ที่ต้องการฝึกแบบ Athletic Performance',
       certifications: ['Sports Performance Coach', 'Speed & Agility Training', 'ปฐมพยาบาลและ CPR'],
       schedule: ['อ. 10:00–18:00', 'พ. 12:00–20:00', 'พฤ. 10:00–18:00', 'ส. 08:00–13:00'],
-      color: 'linear-gradient(135deg, #5126a8, #075bd8)'
+      color: 'linear-gradient(135deg, #5126a8, #075bd8)',
+      soft: 'linear-gradient(180deg, #f4f1fe, #e0dbf9)'
     },
     {
       id: 'coach-may',
       name: 'โค้ชเมธาวี อินทร์แก้ว',
       initials: 'MY',
+      photo: 'assets/trainers/coach-may.jpg',
       gender: 'female',
       role: 'Mobility & Corrective Exercise',
       experience: 7,
@@ -74,12 +81,14 @@
       bio: 'เน้นคุณภาพการเคลื่อนไหว ความยืดหยุ่น และการฝึกแก้ไขท่าทาง เหมาะกับผู้เริ่มต้นหรือผู้ที่ต้องการกลับมาออกกำลังกายอย่างปลอดภัย',
       certifications: ['Corrective Exercise Specialist', 'Mobility Fundamentals', 'ปฐมพยาบาลและ CPR'],
       schedule: ['จ. 10:00–18:00', 'อ. 12:00–20:00', 'พฤ. 09:00–17:00', 'ศ. 10:00–18:00'],
-      color: 'linear-gradient(135deg, #04a878, #087ca7)'
+      color: 'linear-gradient(135deg, #04a878, #087ca7)',
+      soft: 'linear-gradient(180deg, #ecfbf4, #d7f2e8)'
     },
     {
       id: 'coach-beam',
       name: 'โค้ชบีม ปารมีชัย',
       initials: 'BM',
+      photo: 'assets/trainers/coach-beam.jpg',
       gender: 'male',
       role: 'Functional Training Coach',
       experience: 5,
@@ -90,12 +99,14 @@
       bio: 'โปรแกรมสนุก กระชับ และปรับระดับได้ ช่วยพัฒนาความฟิตทั่วร่างกาย เหมาะกับคนที่ไม่ชอบการฝึกแบบเดิม ๆ',
       certifications: ['Functional Training Specialist', 'Group Exercise Leader', 'ปฐมพยาบาลและ CPR'],
       schedule: ['จ. 14:00–20:00', 'พ. 14:00–20:00', 'ศ. 14:00–20:00', 'ส. 09:00–14:00'],
-      color: 'linear-gradient(135deg, #f08025, #bd3c59)'
+      color: 'linear-gradient(135deg, #f08025, #bd3c59)',
+      soft: 'linear-gradient(180deg, #fff4ec, #fbe3e2)'
     },
     {
       id: 'coach-fah',
       name: 'โค้ชฟ้า ณัฐกานต์',
       initials: 'FA',
+      photo: 'assets/trainers/coach-fah.jpg',
       gender: 'female',
       role: 'Beginner Fitness Coach',
       experience: 4,
@@ -106,7 +117,8 @@
       bio: 'ดูแลผู้เริ่มต้นอย่างใกล้ชิด สอนใช้อุปกรณ์และวางแผนการฝึกทีละขั้น เพื่อสร้างความมั่นใจและนิสัยออกกำลังกายในระยะยาว',
       certifications: ['Certified Personal Trainer (CPT)', 'Behavior Change Basics', 'ปฐมพยาบาลและ CPR'],
       schedule: ['อ. 08:00–16:00', 'พ. 08:00–16:00', 'พฤ. 12:00–20:00', 'ส. 09:00–16:00'],
-      color: 'linear-gradient(135deg, #e45b94, #6546c7)'
+      color: 'linear-gradient(135deg, #e45b94, #6546c7)',
+      soft: 'linear-gradient(180deg, #fff1f7, #ede7fc)'
     }
   ];
 
@@ -264,12 +276,18 @@
     return score;
   }
 
+  function trainerPhoto(trainer) {
+    if (!trainer.photo) return '';
+    return `<img class="trainer-photo" src="${escapeHTML(trainer.photo)}" alt="ภาพโปรไฟล์ ${escapeHTML(trainer.name)}" loading="lazy" decoding="async" onerror="this.remove()">`;
+  }
+
   function trainerCard(trainer, recommended = false) {
     return `
       <article class="trainer-card${recommended ? ' recommended' : ''}" data-trainer-card="${trainer.id}">
-        <div class="trainer-cover" style="--trainer-bg:${trainer.color}">
+        <div class="trainer-cover" style="--trainer-bg:${trainer.color};--trainer-soft:${trainer.soft || 'linear-gradient(180deg, #f5f8fd, #e4ecf8)'}">
           <span class="match-pill">✓ เหมาะกับเป้าหมายคุณ</span>
           <div class="trainer-avatar" aria-hidden="true">${escapeHTML(trainer.initials)}</div>
+          ${trainerPhoto(trainer)}
         </div>
         <div class="trainer-card-body">
           <div class="trainer-meta"><span>ประสบการณ์ ${trainer.experience} ปี</span><span>★ ${trainer.rating}</span></div>
@@ -337,8 +355,18 @@
     const id = new URLSearchParams(window.location.search).get('id') || TRAINERS[0].id;
     const trainer = TRAINERS.find(item => item.id === id) || TRAINERS[0];
     document.title = `${trainer.name} | Sports Science Fitness Club`;
-    $('[data-detail-portrait]', root).style.setProperty('--trainer-bg', trainer.color);
+    const portrait = $('[data-detail-portrait]', root);
+    portrait.style.setProperty('--trainer-bg', trainer.color);
+    portrait.style.setProperty('--trainer-soft', trainer.soft || 'linear-gradient(180deg, #f5f8fd, #e4ecf8)');
     $('[data-detail-initials]', root).textContent = trainer.initials;
+    if (trainer.photo) {
+      const photo = document.createElement('img');
+      photo.className = 'trainer-photo';
+      photo.src = trainer.photo;
+      photo.alt = `ภาพโปรไฟล์ ${trainer.name}`;
+      photo.addEventListener('error', () => photo.remove());
+      portrait.prepend(photo);
+    }
     $('[data-detail-name]', root).textContent = trainer.name;
     $('[data-detail-role]', root).textContent = trainer.role;
     $('[data-detail-rating]', root).textContent = `★ ${trainer.rating}`;
